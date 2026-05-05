@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0f0e0c;
+  --cream: #f5f0e8;
+  --warm: #f0e8d5;
+  --accent: #c8511a;
+  --accent-light: #e8673a;
+  --muted: #7a7368;
+  --green: #2d6a4f;
+  --green-light: #40916c;
+  --border: rgba(15,14,12,0.12);
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+* { box-sizing: border-box; }
