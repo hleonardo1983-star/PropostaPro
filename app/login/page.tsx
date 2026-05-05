@@ -24,7 +24,7 @@ export default function LoginPage() {
     <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#f5f0e8",padding:"2rem"}}>
       <div style={{background:"white",borderRadius:20,padding:"3rem",width:"100%",maxWidth:420,border:"1px solid rgba(15,14,12,0.1)",boxShadow:"0 20px 60px rgba(15,14,12,0.08)"}}>
         <div style={{textAlign:"center",marginBottom:"2.5rem"}}>
-          <Link href="/" style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.75rem",color:"#0f0e0c",textDecoration:"none",letterSpacing:"-0.02em"}}>
+          <Link href="/" style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem",color:"#0f0e0c",textDecoration:"none",letterSpacing:"-0.02em"}}>
             Proposta<span style={{color:"#c8511a"}}>Fácil</span>
           </Link>
           <p style={{color:"#7a7368",marginTop:"0.5rem",fontSize:"0.9rem"}}>Entre na sua conta</p>

@@ -72,7 +72,7 @@ export default function PublicProposalPage() {
   if (!proposal) return (
     <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#f5f0e8",flexDirection:"column",gap:"1rem",padding:"2rem",textAlign:"center"}}>
       <div style={{fontSize:"3rem"}}>🔍</div>
-      <h1 style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.75rem"}}>Proposta não encontrada</h1>
+      <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem"}}>Proposta não encontrada</h1>
       <p style={{color:"#7a7368"}}>Este link pode ter expirado ou ser inválido.</p>
     </div>
   )
@@ -84,7 +84,7 @@ export default function PublicProposalPage() {
 
       {/* Header */}
       <div style={{background:"white",borderBottom:"1px solid rgba(15,14,12,0.1)",padding:"1rem 2rem",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <span style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.25rem",letterSpacing:"-0.02em"}}>
+        <span style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.25rem",letterSpacing:"-0.02em"}}>
           {tenant?.name || 'PropostaFácil'}
         </span>
         {signed && <span style={{background:"rgba(45,106,79,0.1)",color:"#2d6a4f",padding:"0.3rem 0.8rem",borderRadius:100,fontSize:"0.8rem",fontWeight:600}}>✅ Assinada</span>}
@@ -94,7 +94,7 @@ export default function PublicProposalPage() {
         {/* Title */}
         <div style={{marginBottom:"2rem"}}>
           <p style={{fontSize:"0.8rem",color:"#7a7368",marginBottom:"0.25rem"}}>Proposta #{proposal.number}</p>
-          <h1 style={{fontFamily:"'Instrument Serif',serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.5rem"}}>{proposal.title}</h1>
+          <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.5rem"}}>{proposal.title}</h1>
           <div style={{display:"flex",gap:"1.5rem",fontSize:"0.85rem",color:"#7a7368",flexWrap:"wrap"}}>
             <span>📅 {new Date(proposal.created_at).toLocaleDateString('pt-BR')}</span>
             {proposal.valid_until && <span>⏰ Válida até {new Date(proposal.valid_until).toLocaleDateString('pt-BR')}</span>}
@@ -125,7 +125,7 @@ export default function PublicProposalPage() {
             <tfoot>
               <tr style={{borderTop:"2px solid rgba(15,14,12,0.1)",background:"#f5f0e8"}}>
                 <td colSpan={3} style={{padding:"1rem 1.25rem",fontSize:"0.9rem",fontWeight:600,textAlign:"right"}}>Total</td>
-                <td style={{padding:"1rem 1.25rem",fontSize:"1.25rem",fontWeight:700,textAlign:"right",color:"#c8511a",fontFamily:"'Instrument Serif',serif"}}>{formatCurrency(total)}</td>
+                <td style={{padding:"1rem 1.25rem",fontSize:"1.25rem",fontWeight:700,textAlign:"right",color:"#c8511a",fontFamily:"'Fraunces',Georgia,serif"}}>{formatCurrency(total)}</td>
               </tr>
             </tfoot>
           </table>
@@ -140,7 +140,7 @@ export default function PublicProposalPage() {
         {/* Signature */}
         {!signed ? (
           <div style={{background:"white",borderRadius:16,border:"1.5px solid rgba(15,14,12,0.15)",padding:"2rem"}}>
-            <h3 style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.25rem",marginBottom:"0.5rem"}}>Assinar proposta</h3>
+            <h3 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.25rem",marginBottom:"0.5rem"}}>Assinar proposta</h3>
             <p style={{fontSize:"0.875rem",color:"#7a7368",marginBottom:"1.5rem",lineHeight:1.6}}>
               Ao assinar, você concorda com os termos e valores apresentados acima. A assinatura será registrada com seu nome, data e hora.
             </p>
@@ -159,7 +159,7 @@ export default function PublicProposalPage() {
         ) : (
           <div style={{background:"rgba(45,106,79,0.08)",border:"1.5px solid rgba(45,106,79,0.25)",borderRadius:16,padding:"2rem",textAlign:"center"}}>
             <div style={{fontSize:"3rem",marginBottom:"1rem"}}>✅</div>
-            <h3 style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.5rem",color:"#2d6a4f",marginBottom:"0.5rem"}}>Proposta aceita!</h3>
+            <h3 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.5rem",color:"#2d6a4f",marginBottom:"0.5rem"}}>Proposta aceita!</h3>
             <p style={{color:"#2d6a4f",fontSize:"0.875rem",lineHeight:1.6}}>
               Assinado por <strong>{proposal.signer_name}</strong><br/>
               {proposal.signed_at && new Date(proposal.signed_at).toLocaleString('pt-BR')}

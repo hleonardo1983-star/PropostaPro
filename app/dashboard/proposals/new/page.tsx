@@ -88,7 +88,7 @@ export default function NewProposalPage() {
   return (
     <div style={{maxWidth:760}}>
       <div style={{marginBottom:"2rem"}}>
-        <h1 style={{fontFamily:"'Instrument Serif',serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Nova proposta</h1>
+        <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Nova proposta</h1>
         <p style={{color:"#7a7368",fontSize:"0.9rem"}}>Proposta #{proposalCount}</p>
       </div>
 
@@ -156,7 +156,7 @@ export default function NewProposalPage() {
           </button>
           <div style={{marginTop:"1.5rem",display:"flex",justifyContent:"flex-end",alignItems:"center",gap:"1.5rem",paddingTop:"1rem",borderTop:"1px solid rgba(15,14,12,0.08)"}}>
             <span style={{color:"#7a7368",fontSize:"0.9rem"}}>Total</span>
-            <span style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.75rem",color:"#c8511a",letterSpacing:"-0.02em"}}>{formatCurrency(total)}</span>
+            <span style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem",color:"#c8511a",letterSpacing:"-0.02em"}}>{formatCurrency(total)}</span>
           </div>
         </div>
 

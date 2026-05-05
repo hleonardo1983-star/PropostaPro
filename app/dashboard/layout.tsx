@@ -24,7 +24,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div style={{display:"flex",minHeight:"100vh",background:"#f5f0e8"}}>
       {/* Sidebar */}
       <aside style={{width:240,background:"#0f0e0c",display:"flex",flexDirection:"column",padding:"1.5rem 0",flexShrink:0}}>
-        <div style={{padding:"0 1.5rem 2rem",fontFamily:"'Instrument Serif',serif",fontSize:"1.3rem",color:"#f5f0e8",letterSpacing:"-0.02em"}}>
+        <div style={{padding:"0 1.5rem 2rem",fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.3rem",color:"#f5f0e8",letterSpacing:"-0.02em"}}>
           Proposta<span style={{color:"#c8511a"}}>Fácil</span>
         </div>
         <nav style={{flex:1,display:"flex",flexDirection:"column",gap:"0.25rem",padding:"0 0.75rem"}}>

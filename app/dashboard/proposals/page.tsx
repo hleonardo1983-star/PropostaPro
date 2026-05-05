@@ -41,7 +41,7 @@ export default function ProposalsPage() {
     <div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"2rem"}}>
         <div>
-          <h1 style={{fontFamily:"'Instrument Serif',serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Propostas</h1>
+          <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Propostas</h1>
           <p style={{color:"#7a7368",fontSize:"0.9rem"}}>{proposals.length} proposta{proposals.length !== 1 ? 's' : ''} no total</p>
         </div>
         <Link href="/dashboard/proposals/new" style={{background:"#c8511a",color:"white",padding:"0.7rem 1.5rem",borderRadius:100,textDecoration:"none",fontSize:"0.9rem",fontWeight:600}}>

@@ -10,12 +10,23 @@
   --green: #2d6a4f;
   --green-light: #40916c;
   --border: rgba(15,14,12,0.12);
+
+  /* Fontes empresariais */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
 }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-sans);
   background: var(--cream);
   color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-* { box-sizing: border-box; }
+/* Aplica fonte serif nos títulos h1 com Fraunces */
+h1, h2 {
+  font-family: var(--font-serif);
+}

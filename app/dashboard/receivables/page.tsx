@@ -40,19 +40,19 @@ export default function ReceivablesPage() {
   return (
     <div>
       <div style={{marginBottom:"2rem"}}>
-        <h1 style={{fontFamily:"'Instrument Serif',serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Contas a receber</h1>
+        <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Contas a receber</h1>
         <p style={{color:"#7a7368",fontSize:"0.9rem"}}>Geradas automaticamente ao assinar propostas</p>
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:"1rem",marginBottom:"2rem"}}>
         <div style={{background:"white",borderRadius:16,padding:"1.5rem",border:"1px solid rgba(15,14,12,0.1)"}}>
           <div style={{fontSize:"1.25rem",marginBottom:"0.5rem"}}>⏳</div>
-          <div style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.75rem",color:"#c8511a",letterSpacing:"-0.02em"}}>{formatCurrency(total)}</div>
+          <div style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem",color:"#c8511a",letterSpacing:"-0.02em"}}>{formatCurrency(total)}</div>
           <div style={{fontSize:"0.8rem",color:"#7a7368",marginTop:"0.25rem"}}>Pendente a receber</div>
         </div>
         <div style={{background:"white",borderRadius:16,padding:"1.5rem",border:"1px solid rgba(15,14,12,0.1)"}}>
           <div style={{fontSize:"1.25rem",marginBottom:"0.5rem"}}>✅</div>
-          <div style={{fontFamily:"'Instrument Serif',serif",fontSize:"1.75rem",color:"#2d6a4f",letterSpacing:"-0.02em"}}>{formatCurrency(totalPaid)}</div>
+          <div style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem",color:"#2d6a4f",letterSpacing:"-0.02em"}}>{formatCurrency(totalPaid)}</div>
           <div style={{fontSize:"0.8rem",color:"#7a7368",marginTop:"0.25rem"}}>Total recebido</div>
         </div>
       </div>
