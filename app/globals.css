@@ -1,19 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0f0e0c;
-  --cream: #f5f0e8;
-  --warm: #f0e8d5;
+  --ink: #111827;
+  --cream: #f8f7f4;
+  --warm: #f0ede6;
   --accent: #c8511a;
   --accent-light: #e8673a;
-  --muted: #7a7368;
-  --green: #2d6a4f;
-  --green-light: #40916c;
-  --border: rgba(15,14,12,0.12);
-
-  /* Fontes empresariais */
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-serif: 'Fraunces', Georgia, serif;
+  --muted: #6b7280;
+  --green: #065f46;
+  --green-light: #059669;
+  --border: rgba(17,24,39,0.1);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Sora', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,10 +21,4 @@ body {
   background: var(--cream);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Aplica fonte serif nos títulos h1 com Fraunces */
-h1, h2 {
-  font-family: var(--font-serif);
 }
