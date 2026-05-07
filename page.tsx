@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-const font = "'Outfit', system-ui, sans-serif"
+const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
 export default function LandingPage() {
   return (

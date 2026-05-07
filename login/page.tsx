@@ -31,7 +31,7 @@ export default function LoginPage() {
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #f8f7f4 0%, #f0ede6 100%)", padding: "2rem" }}>
       <div style={{ background: "white", borderRadius: 24, padding: "3rem", width: "100%", maxWidth: 420, border: "1px solid rgba(17,24,39,0.08)", boxShadow: "0 24px 64px rgba(17,24,39,0.1)" }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <Link href="/" style={{ fontFamily: "'Outfit',sans-serif", fontSize: "1.6rem", color: "#111827", textDecoration: "none", fontWeight: 700, letterSpacing: "-0.03em" }}>
+          <Link href="/" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: "1.6rem", color: "#111827", textDecoration: "none", fontWeight: 700, letterSpacing: "-0.03em" }}>
             Proposta<span style={{ color: "#c8511a" }}>Pro</span>
           </Link>
           <p style={{ color: "#6b7280", marginTop: "0.5rem", fontSize: "0.9rem" }}>Entre na sua conta</p>

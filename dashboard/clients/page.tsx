@@ -39,7 +39,7 @@ export default function ClientsPage() {
     <div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"2rem"}}>
         <div>
-          <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Clientes</h1>
+          <h1 style={{fontFamily:"'Plus Jakarta Sans', system-ui, sans-serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>Clientes</h1>
           <p style={{color:"#7a7368",fontSize:"0.9rem"}}>{clients.length} cliente{clients.length !== 1 ? 's' : ''}</p>
         </div>
         <button onClick={()=>setShowForm(!showForm)}

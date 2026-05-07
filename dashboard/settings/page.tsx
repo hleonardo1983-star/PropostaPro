@@ -85,7 +85,7 @@ export default function SettingsPage() {
   return (
     <div style={{ maxWidth: 600 }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: "'Outfit',sans-serif", fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.25rem' }}>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.25rem' }}>
           Configurações
         </h1>
         <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Edite seus dados pessoais e da empresa</p>

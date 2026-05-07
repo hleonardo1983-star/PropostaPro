@@ -84,7 +84,7 @@ export default function PublicProposalPage() {
   if (!proposal) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f7f4', flexDirection: 'column', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
       <div style={{ fontSize: '3rem' }}>🔍</div>
-      <h1 style={{ fontFamily: "'Outfit',sans-serif", fontSize: '1.75rem', fontWeight: 700 }}>Proposta não encontrada</h1>
+      <h1 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.75rem', fontWeight: 700 }}>Proposta não encontrada</h1>
       <p style={{ color: '#6b7280' }}>Este link pode ter expirado ou ser inválido.</p>
     </div>
   )
@@ -100,13 +100,13 @@ export default function PublicProposalPage() {
         }
       `}</style>
 
-      <div style={{ minHeight: '100vh', background: '#f8f7f4', fontFamily: "'Outfit',system-ui,sans-serif" }}>
+      <div style={{ minHeight: '100vh', background: '#f8f7f4', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit&family=Outfit&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&family=Plus+Jakarta+Sans&display=swap" rel="stylesheet" />
 
         {/* Header */}
         <div className="no-print" style={{ background: 'white', borderBottom: '1px solid rgba(17,24,39,0.08)', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.03em' }}>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.03em' }}>
             {tenant?.name || 'PropostaPro'}
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -123,14 +123,14 @@ export default function PublicProposalPage() {
 
           {/* Print header (só aparece no PDF) */}
           <div style={{ display: 'none' }} className="print-only">
-            <h2 style={{ fontFamily: "'Outfit',sans-serif", marginBottom: '0.25rem' }}>{tenant?.name}</h2>
+            <h2 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", marginBottom: '0.25rem' }}>{tenant?.name}</h2>
             <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
           </div>
 
           {/* Title */}
           <div style={{ marginBottom: '2rem' }}>
             <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '0.25rem' }}>Proposta #{proposal.number}</p>
-            <h1 style={{ fontFamily: "'Outfit',sans-serif", fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.75rem', color: '#111827' }}>{proposal.title}</h1>
+            <h1 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.75rem', color: '#111827' }}>{proposal.title}</h1>
             <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', color: '#6b7280', flexWrap: 'wrap' }}>
               <span>📅 {new Date(proposal.created_at).toLocaleDateString('pt-BR')}</span>
               {proposal.valid_until && <span>⏰ Válida até {new Date(proposal.valid_until).toLocaleDateString('pt-BR')}</span>}
@@ -161,7 +161,7 @@ export default function PublicProposalPage() {
               <tfoot>
                 <tr style={{ borderTop: '2px solid rgba(17,24,39,0.08)', background: '#f9fafb' }}>
                   <td colSpan={3} style={{ padding: '1rem 1.25rem', fontSize: '0.9rem', fontWeight: 700, textAlign: 'right', color: '#111827' }}>Total</td>
-                  <td style={{ padding: '1rem 1.25rem', fontSize: '1.25rem', fontWeight: 700, textAlign: 'right', color: '#c8511a', fontFamily: "'Outfit',sans-serif" }}>{formatCurrency(total)}</td>
+                  <td style={{ padding: '1rem 1.25rem', fontSize: '1.25rem', fontWeight: 700, textAlign: 'right', color: '#c8511a', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{formatCurrency(total)}</td>
                 </tr>
               </tfoot>
             </table>
@@ -176,7 +176,7 @@ export default function PublicProposalPage() {
           {/* Signature */}
           {!signed ? (
             <div className="no-print" style={{ background: 'white', borderRadius: 16, border: '1.5px solid rgba(17,24,39,0.12)', padding: '2rem' }}>
-              <h3 style={{ fontFamily: "'Outfit',sans-serif", fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#111827' }}>Assinar proposta</h3>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#111827' }}>Assinar proposta</h3>
               <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem', lineHeight: 1.6 }}>
                 Ao assinar, você concorda com os termos e valores apresentados acima.
               </p>
@@ -195,7 +195,7 @@ export default function PublicProposalPage() {
           ) : (
             <div style={{ background: 'rgba(5,150,105,0.06)', border: '1.5px solid rgba(5,150,105,0.2)', borderRadius: 16, padding: '2rem', textAlign: 'center' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>✅</div>
-              <h3 style={{ fontFamily: "'Outfit',sans-serif", fontSize: '1.35rem', fontWeight: 700, color: '#065f46', marginBottom: '0.5rem' }}>Proposta aceita!</h3>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.35rem', fontWeight: 700, color: '#065f46', marginBottom: '0.5rem' }}>Proposta aceita!</h3>
               <p style={{ color: '#065f46', fontSize: '0.875rem', lineHeight: 1.6 }}>
                 Assinado por <strong>{proposal.signer_name}</strong><br />
                 {proposal.signed_at && new Date(proposal.signed_at).toLocaleString('pt-BR')}

@@ -147,7 +147,7 @@ export default function NewProposalPage() {
   return (
     <div style={{ maxWidth: 760 }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: "'Outfit',sans-serif", fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.25rem' }}>Nova proposta</h1>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.25rem' }}>Nova proposta</h1>
         <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Proposta #{proposalCount}</p>
       </div>
 
@@ -210,7 +210,7 @@ export default function NewProposalPage() {
         {/* Total */}
         <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(17,24,39,0.08)', padding: '1.25rem 2rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1.5rem' }}>
           <span style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>Total da proposta</span>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: '2rem', color: '#c8511a', letterSpacing: '-0.03em', fontWeight: 700 }}>{formatCurrency(total)}</span>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '2rem', color: '#c8511a', letterSpacing: '-0.03em', fontWeight: 700 }}>{formatCurrency(total)}</span>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
