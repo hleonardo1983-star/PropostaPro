@@ -51,7 +51,7 @@ export default function DashboardPage() {
   return (
     <div>
       <div style={{marginBottom:"2rem"}}>
-        <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>
+        <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:"2rem",letterSpacing:"-0.02em",marginBottom:"0.25rem"}}>
           Olá, {tenantName} 👋
         </h1>
         <p style={{color:"#7a7368",fontSize:"0.9rem"}}>Aqui está o resumo da sua conta</p>
@@ -67,7 +67,7 @@ export default function DashboardPage() {
         ].map(s => (
           <div key={s.label} style={{background:"white",borderRadius:16,padding:"1.5rem",border:"1px solid rgba(15,14,12,0.1)"}}>
             <div style={{fontSize:"1.5rem",marginBottom:"0.75rem"}}>{s.icon}</div>
-            <div style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem",color:s.color,letterSpacing:"-0.02em"}}>{s.value}</div>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.75rem",color:s.color,letterSpacing:"-0.02em"}}>{s.value}</div>
             <div style={{fontSize:"0.8rem",color:"#7a7368",marginTop:"0.25rem"}}>{s.label}</div>
           </div>
         ))}

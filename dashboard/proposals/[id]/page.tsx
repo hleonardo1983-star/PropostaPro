@@ -89,7 +89,7 @@ export default function ProposalDetailPage() {
       {showSendModal && (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:"1rem"}}>
           <div style={{background:"white",borderRadius:20,padding:"2.5rem",width:"100%",maxWidth:440}}>
-            <h3 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.5rem",marginBottom:"0.5rem"}}>Enviar proposta</h3>
+            <h3 style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.5rem",marginBottom:"0.5rem"}}>Enviar proposta</h3>
             <p style={{color:"#7a7368",fontSize:"0.875rem",marginBottom:"2rem"}}>Escolha como enviar para o cliente</p>
 
             <div style={{marginBottom:"1.5rem"}}>
@@ -133,7 +133,7 @@ export default function ProposalDetailPage() {
           <div style={{display:"flex",alignItems:"center",gap:"0.75rem",marginBottom:"0.5rem"}}>
             <Link href="/dashboard/proposals" style={{color:"#7a7368",textDecoration:"none",fontSize:"0.875rem"}}>← Propostas</Link>
           </div>
-          <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem",letterSpacing:"-0.02em",marginBottom:"0.5rem"}}>{proposal.title}</h1>
+          <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:"1.75rem",letterSpacing:"-0.02em",marginBottom:"0.5rem"}}>{proposal.title}</h1>
           <div style={{display:"flex",alignItems:"center",gap:"0.75rem"}}>
             <span style={{color:"#7a7368",fontSize:"0.875rem"}}>#{proposal.number}</span>
             <span style={{background:s.bg,color:s.color,padding:"0.25rem 0.65rem",borderRadius:100,fontSize:"0.75rem",fontWeight:600}}>{s.label}</span>
@@ -219,7 +219,7 @@ export default function ProposalDetailPage() {
           <tfoot>
             <tr style={{borderTop:"2px solid rgba(15,14,12,0.1)"}}>
               <td colSpan={3} style={{padding:"1rem 1.5rem",fontSize:"0.9rem",fontWeight:600,textAlign:"right"}}>Total</td>
-              <td style={{padding:"1rem 1.5rem",fontSize:"1.1rem",fontWeight:700,textAlign:"right",color:"#c8511a",fontFamily:"'Fraunces',Georgia,serif"}}>{formatCurrency(total)}</td>
+              <td style={{padding:"1rem 1.5rem",fontSize:"1.1rem",fontWeight:700,textAlign:"right",color:"#c8511a",fontFamily:"'Outfit',sans-serif"}}>{formatCurrency(total)}</td>
             </tr>
           </tfoot>
         </table>

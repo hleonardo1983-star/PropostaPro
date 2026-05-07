@@ -1,15 +1,14 @@
 import Link from 'next/link'
 
-const sora = "'Sora', system-ui, sans-serif"
-const inter = "'Outfit', system-ui, sans-serif"
+const font = "'Outfit', system-ui, sans-serif"
 
 export default function LandingPage() {
   return (
-    <div style={{ fontFamily: inter, background: "#f8f7f4", color: "#111827", minHeight: "100vh" }}>
+    <div style={{ fontFamily: font, background: "#f8f7f4", color: "#111827", minHeight: "100vh" }}>
 
       {/* NAV */}
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.1rem 5vw", background: "rgba(248,247,244,0.92)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(17,24,39,0.08)" }}>
-        <span style={{ fontFamily: sora, fontSize: "1.4rem", fontWeight: 700, letterSpacing: "-0.03em" }}>
+        <span style={{ fontFamily: font, fontSize: "1.4rem", fontWeight: 700, letterSpacing: "-0.03em" }}>
           Proposta<span style={{ color: "#c8511a" }}>Pro</span>
         </span>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
@@ -27,14 +26,14 @@ export default function LandingPage() {
             <span style={{ width: 7, height: 7, background: "#059669", borderRadius: "50%", display: "inline-block" }}></span>
             Mais de 3.000 propostas assinadas este mês
           </div>
-          <h1 style={{ fontFamily: sora, fontSize: "clamp(2.8rem,6vw,5rem)", lineHeight: 1.1, letterSpacing: "-0.04em", fontWeight: 700, marginBottom: "1.5rem", color: "#111827" }}>
+          <h1 style={{ fontFamily: font, fontSize: "clamp(2.8rem,6vw,5rem)", lineHeight: 1.1, letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "1.5rem", color: "#111827" }}>
             Orçamentos que <span style={{ color: "#c8511a", fontStyle: "italic" }}>fecham</span><br />negócios — sem esforço
           </h1>
           <p style={{ fontSize: "1.1rem", color: "#6b7280", maxWidth: 520, margin: "0 auto 2.5rem", lineHeight: 1.65, fontWeight: 400 }}>
             Crie propostas profissionais, envie por WhatsApp ou e-mail, receba a assinatura do cliente e gere a cobrança automaticamente.
           </p>
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/register" style={{ background: "#c8511a", color: "white", padding: "0.9rem 2.25rem", borderRadius: "100px", textDecoration: "none", fontWeight: 700, fontSize: "1rem", boxShadow: "0 4px 20px rgba(200,81,26,0.3)", fontFamily: inter }}>
+            <Link href="/register" style={{ background: "#c8511a", color: "white", padding: "0.9rem 2.25rem", borderRadius: "100px", textDecoration: "none", fontWeight: 700, fontSize: "1rem", boxShadow: "0 4px 20px rgba(200,81,26,0.3)" }}>
               Criar conta grátis
             </Link>
             <Link href="/login" style={{ background: "white", color: "#111827", padding: "0.9rem 2rem", borderRadius: "100px", textDecoration: "none", fontWeight: 500, fontSize: "1rem", border: "1.5px solid rgba(17,24,39,0.12)" }}>
@@ -53,7 +52,7 @@ export default function LandingPage() {
       <section style={{ background: "white", padding: "6rem 5vw" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#c8511a", marginBottom: "0.75rem" }}>Como funciona</p>
-          <h2 style={{ fontFamily: sora, fontSize: "clamp(1.8rem,3.5vw,2.75rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "3rem", color: "#111827", maxWidth: 480 }}>
+          <h2 style={{ fontFamily: font, fontSize: "clamp(1.8rem,3.5vw,2.75rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "3rem", color: "#111827", maxWidth: 480 }}>
             Da proposta à cobrança em minutos
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "1.5rem" }}>
@@ -64,7 +63,7 @@ export default function LandingPage() {
               { num: "04", icon: "💰", title: "Cobrança automática", desc: "Conta a receber criada automaticamente assim que o cliente assina." },
             ].map(s => (
               <div key={s.num} style={{ background: "#f8f7f4", borderRadius: 16, padding: "2rem", position: "relative", border: "1px solid rgba(17,24,39,0.06)" }}>
-                <span style={{ fontFamily: sora, fontSize: "3rem", color: "rgba(17,24,39,0.05)", position: "absolute", top: "1rem", right: "1.25rem", fontWeight: 700 }}>{s.num}</span>
+                <span style={{ fontFamily: font, fontSize: "3rem", color: "rgba(17,24,39,0.05)", position: "absolute", top: "1rem", right: "1.25rem", fontWeight: 700 }}>{s.num}</span>
                 <div style={{ fontSize: "1.75rem", marginBottom: "1rem" }}>{s.icon}</div>
                 <h3 style={{ fontWeight: 700, marginBottom: "0.5rem", fontSize: "1rem", color: "#111827" }}>{s.title}</h3>
                 <p style={{ fontSize: "0.875rem", color: "#6b7280", lineHeight: 1.65 }}>{s.desc}</p>
@@ -78,7 +77,7 @@ export default function LandingPage() {
       <section style={{ padding: "6rem 5vw", background: "#f8f7f4" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#c8511a", marginBottom: "0.75rem" }}>Funcionalidades</p>
-          <h2 style={{ fontFamily: sora, fontSize: "clamp(1.8rem,3.5vw,2.75rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "3rem", color: "#111827" }}>
+          <h2 style={{ fontFamily: font, fontSize: "clamp(1.8rem,3.5vw,2.75rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "3rem", color: "#111827" }}>
             Tudo que você precisa
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "1rem" }}>
@@ -104,7 +103,7 @@ export default function LandingPage() {
       <section style={{ background: "#111827", color: "white", padding: "6rem 5vw" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#e8673a", marginBottom: "0.75rem" }}>Preços</p>
-          <h2 style={{ fontFamily: sora, fontSize: "clamp(1.8rem,3.5vw,2.75rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: font, fontSize: "clamp(1.8rem,3.5vw,2.75rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "3rem" }}>
             Simples e transparente
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "1.5rem", maxWidth: 900 }}>
@@ -116,14 +115,14 @@ export default function LandingPage() {
               <div key={p.name} style={{ background: p.featured ? "#c8511a" : "rgba(255,255,255,0.05)", border: p.featured ? "none" : "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "2.25rem", position: "relative" }}>
                 {p.featured && <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: "white", color: "#111827", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "0.3rem 0.8rem", borderRadius: "100px", whiteSpace: "nowrap" }}>⚡ Mais popular</div>}
                 <div style={{ fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.6, marginBottom: "0.75rem" }}>{p.name}</div>
-                <div style={{ fontFamily: sora, fontSize: "2.75rem", letterSpacing: "-0.03em", lineHeight: 1, fontWeight: 700 }}>R$ {p.price}<span style={{ fontFamily: inter, fontSize: "0.9rem", opacity: 0.5 }}>/mês</span></div>
+                <div style={{ fontFamily: font, fontSize: "2.75rem", letterSpacing: "-0.03em", lineHeight: 1, fontWeight: 700 }}>R$ {p.price}<span style={{ fontSize: "0.9rem", opacity: 0.5 }}>/mês</span></div>
                 <p style={{ fontSize: "0.85rem", opacity: 0.6, margin: "0.75rem 0 1.75rem" }}>{p.desc}</p>
                 <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.6rem", marginBottom: "2rem", padding: 0 }}>
                   {p.features.map(f => <li key={f} style={{ fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
                     <span style={{ color: p.featured ? "rgba(255,255,255,0.8)" : "#059669", fontWeight: 700 }}>✓</span>{f}
                   </li>)}
                 </ul>
-                <Link href="/register" style={{ display: "block", width: "100%", padding: "0.85rem", borderRadius: "100px", fontWeight: 700, fontSize: "0.9rem", textAlign: "center", textDecoration: "none", background: p.featured ? "white" : "transparent", color: p.featured ? "#c8511a" : "white", border: p.featured ? "none" : "1.5px solid rgba(255,255,255,0.2)", fontFamily: inter }}>
+                <Link href="/register" style={{ display: "block", width: "100%", padding: "0.85rem", borderRadius: "100px", fontWeight: 700, fontSize: "0.9rem", textAlign: "center", textDecoration: "none", background: p.featured ? "white" : "transparent", color: p.featured ? "#c8511a" : "white", border: p.featured ? "none" : "1.5px solid rgba(255,255,255,0.2)" }}>
                   Começar grátis
                 </Link>
               </div>
@@ -134,18 +133,18 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section style={{ padding: "7rem 5vw", textAlign: "center", background: "#f8f7f4" }}>
-        <h2 style={{ fontFamily: sora, fontSize: "clamp(2rem,4vw,3rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "1rem", color: "#111827" }}>
+        <h2 style={{ fontFamily: font, fontSize: "clamp(2rem,4vw,3rem)", letterSpacing: "-0.03em", fontWeight: 700, marginBottom: "1rem", color: "#111827" }}>
           Sua primeira proposta em 5 minutos
         </h2>
         <p style={{ color: "#6b7280", marginBottom: "2.5rem", fontSize: "1rem" }}>14 dias grátis. Sem cartão de crédito. Cancele quando quiser.</p>
-        <Link href="/register" style={{ background: "#c8511a", color: "white", padding: "1rem 2.5rem", borderRadius: "100px", textDecoration: "none", fontWeight: 700, fontSize: "1.05rem", boxShadow: "0 4px 20px rgba(200,81,26,0.3)", fontFamily: inter }}>
+        <Link href="/register" style={{ background: "#c8511a", color: "white", padding: "1rem 2.5rem", borderRadius: "100px", textDecoration: "none", fontWeight: 700, fontSize: "1.05rem", boxShadow: "0 4px 20px rgba(200,81,26,0.3)" }}>
           Criar conta grátis →
         </Link>
       </section>
 
       {/* FOOTER */}
       <footer style={{ background: "#111827", padding: "2rem 5vw", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", fontSize: "0.85rem", color: "rgba(255,255,255,0.3)" }}>
-        <span style={{ fontFamily: sora, color: "rgba(255,255,255,0.6)", fontWeight: 700 }}>Proposta<span style={{ color: "#c8511a" }}>Pro</span></span>
+        <span style={{ fontFamily: font, color: "rgba(255,255,255,0.6)", fontWeight: 700 }}>Proposta<span style={{ color: "#c8511a" }}>Pro</span></span>
         <span>© 2026 PropostaPro. Todos os direitos reservados.</span>
       </footer>
     </div>
