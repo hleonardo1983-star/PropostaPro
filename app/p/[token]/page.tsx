@@ -49,6 +49,10 @@ export default function PublicProposalPage() {
     load()
   }, [params.token])
 
+  const services = items.filter(i => i.sort_order < 1000)
+  const products = items.filter(i => i.sort_order >= 1000)
+  const totalServices = services.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
+  const totalProducts = products.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
   const total = items.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
 
   async function handleSign() {
@@ -67,10 +71,6 @@ export default function PublicProposalPage() {
     setSigning(false)
   }
 
-  function handlePrint() {
-    window.print()
-  }
-
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f7f4', fontFamily: font }}>
       <p style={{ color: '#6b7280' }}>Carregando proposta...</p>
@@ -86,54 +86,72 @@ export default function PublicProposalPage() {
   )
 
   const clientName = proposal.clients?.name || 'Cliente'
-  const fileName = `${tenant?.name || 'Proposta'} - Proposta #${proposal.number} - ${clientName}`
+
+  function ItemTable({ list, title }: { list: any[]; title: string }) {
+    if (list.length === 0) return null
+    const subtotal = list.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
+    return (
+      <div style={{ marginBottom: '1rem' }}>
+        <div style={{ background: '#f3f4f6', padding: '0.6rem 1.25rem', borderBottom: '1px solid rgba(13,17,23,0.06)' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{title}</span>
+        </div>
+        {list.map((item, idx) => (
+          <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
+            <div style={{ padding: '0.9rem 1.25rem', fontSize: '0.9rem', color: '#0d1117', fontWeight: 500 }}>{item.description}</div>
+            <div style={{ padding: '0.9rem 0.5rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280' }}>{item.quantity}</div>
+            <div style={{ padding: '0.9rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280' }}>{formatCurrency(item.unit_price)}</div>
+            <div style={{ padding: '0.9rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 700, color: '#0d1117' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
+          </div>
+        ))}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', background: '#f9fafb', borderBottom: '2px solid rgba(13,17,23,0.08)' }}>
+          <div style={{ padding: '0.75rem 1.25rem', gridColumn: '1/4', textAlign: 'right', fontSize: '0.82rem', fontWeight: 700, color: '#6b7280' }}>Subtotal {title}</div>
+          <div style={{ padding: '0.75rem 1.25rem', textAlign: 'right', fontWeight: 800, color: '#c8511a', fontSize: '0.9rem' }}>{formatCurrency(subtotal)}</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; box-sizing: border-box; }
         @media print {
           .no-print { display: none !important; }
-          @page {
-            margin: 20mm;
-            size: A4;
-          }
+          @page { margin: 15mm; size: A4; }
           body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .print-card { box-shadow: none !important; border: 1px solid #e5e7eb !important; }
-        }
-        @media screen {
-          .print-header-logo { display: none; }
         }
       `}</style>
 
       <div style={{ minHeight: '100vh', background: '#f8f7f4', fontFamily: font }}>
-
-        {/* Top bar — não aparece no PDF */}
+        {/* Top bar */}
         <div className="no-print" style={{ background: 'white', borderBottom: '1px solid rgba(17,24,39,0.08)', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10 }}>
-          <span style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
-            {tenant?.name || 'PropostaPro'}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {tenant?.logo_url && <img src={tenant.logo_url} alt="Logo" style={{ height: 36, objectFit: 'contain' }} />}
+            <span style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em' }}>{tenant?.name || 'PropostaPro'}</span>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {signed && <span style={{ background: 'rgba(5,150,105,0.1)', color: '#065f46', padding: '0.3rem 0.8rem', borderRadius: 100, fontSize: '0.8rem', fontWeight: 700 }}>✅ Assinada</span>}
-            <button onClick={handlePrint}
-              style={{ background: '#0d1117', color: 'white', border: 'none', padding: '0.6rem 1.25rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, fontFamily: font, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <button onClick={() => window.print()}
+              style={{ background: '#0d1117', color: 'white', border: 'none', padding: '0.6rem 1.25rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, fontFamily: font }}>
               ⬇️ Baixar PDF
             </button>
           </div>
         </div>
 
-        {/* Conteúdo */}
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '2rem 1.5rem' }}>
 
-          {/* Cabeçalho profissional — aparece no PDF */}
-          <div className="print-card" style={{ background: 'white', borderRadius: 16, padding: '2rem', marginBottom: '1.5rem', border: '1px solid rgba(17,24,39,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '2px solid #c8511a' }}>
-              <div>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#0d1117', marginBottom: '0.25rem' }}>
-                  {tenant?.name || 'Empresa'}
-                </h1>
-                <p style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: 500 }}>Proposta Comercial</p>
+          {/* Cabeçalho profissional */}
+          <div style={{ background: 'white', borderRadius: 16, padding: '2rem', marginBottom: '1.5rem', border: '1px solid rgba(13,17,23,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '3px solid #c8511a' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {tenant?.logo_url && (
+                  <img src={tenant.logo_url} alt="Logo" style={{ height: 56, objectFit: 'contain', maxWidth: 140 }} />
+                )}
+                <div>
+                  <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#0d1117', marginBottom: '0.15rem' }}>{tenant?.name}</h1>
+                  <p style={{ fontSize: '0.82rem', color: '#9ca3af', fontWeight: 500 }}>Proposta Comercial</p>
+                </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ background: '#c8511a', color: 'white', padding: '0.4rem 1rem', borderRadius: 100, fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.4rem', display: 'inline-block' }}>
@@ -145,8 +163,7 @@ export default function PublicProposalPage() {
               </div>
             </div>
 
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0d1117', marginBottom: '1rem' }}>{proposal.title}</h2>
-
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0d1117', marginBottom: '1rem' }}>{proposal.title}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
                 <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Cliente</p>
@@ -154,46 +171,37 @@ export default function PublicProposalPage() {
                 {proposal.clients?.email && <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>{proposal.clients.email}</p>}
                 {proposal.clients?.phone && <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>{proposal.clients.phone}</p>}
               </div>
-              <div style={{ textAlign: 'right' }}>
-                {proposal.valid_until && (
-                  <>
-                    <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Válida até</p>
-                    <p style={{ fontWeight: 700, color: '#0d1117' }}>{new Date(proposal.valid_until).toLocaleDateString('pt-BR')}</p>
-                  </>
-                )}
-              </div>
+              {proposal.valid_until && (
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Válida até</p>
+                  <p style={{ fontWeight: 700, color: '#0d1117' }}>{new Date(proposal.valid_until).toLocaleDateString('pt-BR')}</p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Itens */}
-          <div className="print-card" style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(17,24,39,0.08)', overflow: 'hidden', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: '#0d1117' }}>
-                  {['Descrição', 'Qtd', 'Valor unit.', 'Total'].map(h => (
-                    <th key={h} style={{ padding: '0.85rem 1.25rem', textAlign: h === 'Descrição' ? 'left' : 'right', fontSize: '0.75rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, idx) => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid rgba(17,24,39,0.05)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
-                    <td style={{ padding: '0.9rem 1.25rem', fontSize: '0.9rem', color: '#0d1117', fontWeight: 500 }}>{item.description}</td>
-                    <td style={{ padding: '0.9rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280' }}>{item.quantity}</td>
-                    <td style={{ padding: '0.9rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280' }}>{formatCurrency(item.unit_price)}</td>
-                    <td style={{ padding: '0.9rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 700, color: '#0d1117' }}>{formatCurrency(item.quantity * item.unit_price)}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr style={{ background: '#0d1117' }}>
-                  <td colSpan={3} style={{ padding: '1rem 1.25rem', fontSize: '0.9rem', fontWeight: 700, textAlign: 'right', color: 'white' }}>Total</td>
-                  <td style={{ padding: '1rem 1.25rem', fontSize: '1.25rem', fontWeight: 800, textAlign: 'right', color: '#c8511a' }}>{formatCurrency(total)}</td>
-                </tr>
-              </tfoot>
-            </table>
+          {/* Itens com divisão serviços/produtos */}
+          <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+            {/* Header da tabela */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', background: '#0d1117', padding: '0' }}>
+              {['Descrição', 'Qtd', 'Valor unit.', 'Total'].map((h, i) => (
+                <div key={h} style={{ padding: '0.85rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'right' : 'left', ...(i === 1 ? { paddingLeft: '0.5rem', paddingRight: '0.5rem' } : {}), ...(i === 2 ? { paddingLeft: '0.75rem', paddingRight: '0.75rem' } : {}) }}>
+                  {h}
+                </div>
+              ))}
+            </div>
+
+            <ItemTable list={items.filter(i => i.sort_order < 1000)} title="Serviços" />
+            <ItemTable list={items.filter(i => i.sort_order >= 1000)} title="Produtos" />
+
+            {/* Total geral */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', background: '#0d1117' }}>
+              <div style={{ padding: '1rem 1.25rem', gridColumn: '1/4', textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Total Geral</div>
+              <div style={{ padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 800, color: '#c8511a', fontSize: '1.1rem' }}>{formatCurrency(total)}</div>
+            </div>
+
             {proposal.notes && (
-              <div style={{ padding: '1.25rem', borderTop: '1px solid rgba(17,24,39,0.06)', background: '#f9fafb' }}>
+              <div style={{ padding: '1.25rem', borderTop: '1px solid rgba(13,17,23,0.06)', background: '#f9fafb' }}>
                 <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9ca3af', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Observações</p>
                 <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: '#374151' }}>{proposal.notes}</p>
               </div>
@@ -202,25 +210,21 @@ export default function PublicProposalPage() {
 
           {/* Assinatura */}
           {!signed ? (
-            <div className="no-print print-card" style={{ background: 'white', borderRadius: 16, border: '1.5px solid rgba(17,24,39,0.12)', padding: '2rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+            <div className="no-print" style={{ background: 'white', borderRadius: 16, border: '1.5px solid rgba(13,17,23,0.12)', padding: '2rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.5rem', color: '#0d1117' }}>Assinar proposta</h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-                Ao assinar, você concorda com os termos e valores apresentados acima.
-              </p>
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem', lineHeight: 1.6 }}>Ao assinar, você concorda com os termos e valores apresentados acima.</p>
               <label style={{ fontSize: '0.82rem', fontWeight: 700, display: 'block', marginBottom: '0.5rem', color: '#374151' }}>Nome completo *</label>
               <input value={signerName} onChange={e => setSignerName(e.target.value)}
-                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 10, border: '1.5px solid rgba(17,24,39,0.15)', fontSize: '0.95rem', outline: 'none', marginBottom: '1rem', fontFamily: font }}
+                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 10, border: '1.5px solid rgba(13,17,23,0.15)', fontSize: '0.95rem', outline: 'none', marginBottom: '1rem', fontFamily: font }}
                 placeholder="Digite seu nome completo" />
               <button onClick={handleSign} disabled={signing || !signerName.trim()}
                 style={{ width: '100%', background: '#065f46', color: 'white', padding: '0.95rem', borderRadius: 100, border: 'none', fontWeight: 800, fontSize: '1rem', cursor: signing || !signerName.trim() ? 'not-allowed' : 'pointer', opacity: signing || !signerName.trim() ? 0.6 : 1, fontFamily: font }}>
                 {signing ? 'Assinando...' : '✍️ Assinar e aceitar proposta'}
               </button>
-              <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.75rem', textAlign: 'center' }}>
-                🔒 Assinatura registrada com timestamp e hash de verificação
-              </p>
+              <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.75rem', textAlign: 'center' }}>🔒 Assinatura registrada com timestamp e hash de verificação</p>
             </div>
           ) : (
-            <div className="print-card" style={{ background: 'rgba(5,150,105,0.06)', border: '1.5px solid rgba(5,150,105,0.2)', borderRadius: 16, padding: '2rem', textAlign: 'center' }}>
+            <div style={{ background: 'rgba(5,150,105,0.06)', border: '1.5px solid rgba(5,150,105,0.2)', borderRadius: 16, padding: '2rem', textAlign: 'center' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>✅</div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#065f46', marginBottom: '0.5rem' }}>Proposta aceita!</h3>
               <p style={{ color: '#065f46', fontSize: '0.875rem', lineHeight: 1.6 }}>
@@ -231,9 +235,7 @@ export default function PublicProposalPage() {
             </div>
           )}
 
-          <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.75rem', color: 'rgba(17,24,39,0.2)' }}>
-            Powered by PropostaPro
-          </p>
+          <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.75rem', color: 'rgba(17,24,39,0.2)' }}>Powered by PropostaPro</p>
         </div>
       </div>
     </>
