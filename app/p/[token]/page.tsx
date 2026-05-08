@@ -195,9 +195,9 @@ export default function PublicProposalPage() {
             <ItemTable list={items.filter(i => i.sort_order >= 1000)} title="Produtos" />
 
             {/* Total geral */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', background: '#0d1117' }}>
-              <div style={{ padding: '1rem 1.25rem', gridColumn: '1/4', textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Total Geral</div>
-              <div style={{ padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 800, color: '#c8511a', fontSize: '1.1rem' }}>{formatCurrency(total)}</div>
+            <div style={{ background: '#0d1117', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.25rem' }}>
+              <div style={{ flex: 1, textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', paddingRight: '1.5rem' }}>Total Geral</div>
+              <div style={{ fontWeight: 800, color: '#c8511a', fontSize: '1.1rem', whiteSpace: 'nowrap', minWidth: 130, textAlign: 'right' }}>{formatCurrency(total)}</div>
             </div>
 
             {proposal.notes && (
