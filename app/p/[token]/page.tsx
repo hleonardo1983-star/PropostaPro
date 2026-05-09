@@ -183,7 +183,7 @@ export default function PublicProposalPage() {
           </div>
 
           {/* Itens com divisão serviços/produtos */}
-          <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'visible', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+          <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
             {/* Header da tabela */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 1px 110px 1px 110px', background: '#0d1117' }}>
               <div style={{ padding: '0.85rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Descrição</div>
@@ -200,7 +200,7 @@ export default function PublicProposalPage() {
             {/* Total geral */}
             <div style={{ background: '#0d1117', display: 'grid', gridTemplateColumns: '1fr 60px 1px 110px 1px 110px' }}>
               <div style={{ padding: '1rem 1.25rem', gridColumn: '1/6', textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Total Geral</div>
-              <div style={{ padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 800, color: tenant?.primary_color || '#c8511a', fontSize: '1.1rem', whiteSpace: 'nowrap' }}>{formatCurrency(total)}</div>
+              <div style={{ padding: '1rem 1.25rem 1rem 0.5rem', textAlign: 'right', fontWeight: 800, color: tenant?.primary_color || '#c8511a', fontSize: '1rem', whiteSpace: 'nowrap' }}>{formatCurrency(total)}</div>
             </div>
 
             {proposal.notes && (
