@@ -151,7 +151,8 @@ export default function ReceivablesPage() {
             <tbody>
               {receivables.map(r => {
                 const s = statusLabel[r.status] || statusLabel.pending
-                const isOverdue = r.status === 'pending' && r.due_date && new Date(r.due_date) < new Date()
+                const dueDateFixed = r.due_date ? r.due_date.split('T')[0] : null
+                const isOverdue = r.status === 'pending' && dueDateFixed && dueDateFixed < new Date().toISOString().split('T')[0]
                 const dueDateColor = isOverdue ? '#991b1b' : '#0d1117'
                 return (
                   <tr key={r.id} style={{ borderBottom: '1px solid rgba(13,17,23,0.05)' }}
@@ -161,7 +162,7 @@ export default function ReceivablesPage() {
                     <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', color: '#6b7280', fontWeight: 500 }}>{(r.clients as any)?.name || '—'}</td>
                     <td style={{ padding: '1rem 1.25rem', fontWeight: 700, fontSize: '0.875rem', color: '#0d1117' }}>{formatCurrency(r.amount)}</td>
                     <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', fontWeight: 600, color: dueDateColor }}>
-                      {r.due_date ? new Date(r.due_date).toLocaleDateString('pt-BR') : '—'}
+                      {dueDateFixed ? new Date(dueDateFixed + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
                       {isOverdue && <span style={{ display: 'block', fontSize: '0.72rem', color: '#991b1b', fontWeight: 700 }}>Vencida</span>}
                     </td>
                     <td style={{ padding: '1rem 1.25rem' }}>
