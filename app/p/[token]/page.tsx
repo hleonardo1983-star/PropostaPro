@@ -197,7 +197,7 @@ export default function PublicProposalPage() {
             {/* Total geral */}
             <div style={{ background: '#0d1117', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.25rem' }}>
               <div style={{ flex: 1, textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', paddingRight: '1.5rem' }}>Total Geral</div>
-              <div style={{ fontWeight: 800, color: '#c8511a', fontSize: '1.1rem', whiteSpace: 'nowrap', minWidth: 130, textAlign: 'right' }}>{formatCurrency(total)}</div>
+              <div style={{ fontWeight: 800, color: '#c8511a', fontSize: '1.1rem', whiteSpace: 'nowrap', minWidth: 150, textAlign: 'right', paddingRight: '0.25rem' }}>{formatCurrency(total)}</div>
             </div>
 
             {proposal.notes && (
