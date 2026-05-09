@@ -91,21 +91,23 @@ export default function PublicProposalPage() {
     if (list.length === 0) return null
     const subtotal = list.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
     return (
-      <div style={{ marginBottom: '1rem' }}>
-        <div style={{ background: '#f3f4f6', padding: '0.6rem 1.25rem', borderBottom: '1px solid rgba(13,17,23,0.06)' }}>
+      <div style={{ marginBottom: '0' }}>
+        <div style={{ background: '#f3f4f6', padding: '0.6rem 1.25rem', borderBottom: '1px solid rgba(13,17,23,0.06)', borderTop: '1px solid rgba(13,17,23,0.06)' }}>
           <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{title}</span>
         </div>
         {list.map((item, idx) => (
-          <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
+          <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 60px 1px 110px 1px 110px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
             <div style={{ padding: '0.9rem 1.25rem', fontSize: '0.9rem', color: '#0d1117', fontWeight: 500 }}>{item.description}</div>
             <div style={{ padding: '0.9rem 0.5rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280' }}>{item.quantity}</div>
+            <div style={{ background: 'rgba(13,17,23,0.06)' }}></div>
             <div style={{ padding: '0.9rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280' }}>{formatCurrency(item.unit_price)}</div>
+            <div style={{ background: 'rgba(13,17,23,0.06)' }}></div>
             <div style={{ padding: '0.9rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 700, color: '#0d1117' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
           </div>
         ))}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', background: '#f9fafb', borderBottom: '2px solid rgba(13,17,23,0.08)' }}>
-          <div style={{ padding: '0.75rem 1.25rem', gridColumn: '1/4', textAlign: 'right', fontSize: '0.82rem', fontWeight: 700, color: '#6b7280' }}>Subtotal {title}</div>
-          <div style={{ padding: '0.75rem 1.25rem', textAlign: 'right', fontWeight: 800, color: '#c8511a', fontSize: '0.9rem' }}>{formatCurrency(subtotal)}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 1px 110px 1px 110px', background: '#f9fafb', borderBottom: '2px solid rgba(13,17,23,0.08)', borderTop: '1px solid rgba(13,17,23,0.06)' }}>
+          <div style={{ padding: '0.75rem 1.25rem', gridColumn: '1/6', textAlign: 'right', fontSize: '0.82rem', fontWeight: 700, color: '#6b7280' }}>Subtotal {title}</div>
+          <div style={{ padding: '0.75rem 1.25rem', textAlign: 'right', fontWeight: 800, color: tenant?.primary_color || '#c8511a', fontSize: '0.9rem' }}>{formatCurrency(subtotal)}</div>
         </div>
       </div>
     )
@@ -143,7 +145,7 @@ export default function PublicProposalPage() {
 
           {/* Cabeçalho profissional */}
           <div style={{ background: 'white', borderRadius: 16, padding: '2rem', marginBottom: '1.5rem', border: '1px solid rgba(13,17,23,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '3px solid #c8511a' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: `3px solid ${tenant?.primary_color || '#c8511a'}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 {tenant?.logo_url && (
                   <img src={tenant.logo_url} alt="Logo" style={{ height: 56, objectFit: 'contain', maxWidth: 140 }} />
@@ -154,7 +156,7 @@ export default function PublicProposalPage() {
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ background: '#c8511a', color: 'white', padding: '0.4rem 1rem', borderRadius: 100, fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.4rem', display: 'inline-block' }}>
+                <div style={{ background: tenant?.primary_color || '#c8511a', color: 'white', padding: '0.4rem 1rem', borderRadius: 100, fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.4rem', display: 'inline-block' }}>
                   Proposta #{proposal.number}
                 </div>
                 <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -183,21 +185,22 @@ export default function PublicProposalPage() {
           {/* Itens com divisão serviços/produtos */}
           <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'visible', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
             {/* Header da tabela */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', background: '#0d1117', padding: '0' }}>
-              {['Descrição', 'Qtd', 'Valor unit.', 'Total'].map((h, i) => (
-                <div key={h} style={{ padding: '0.85rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'right' : 'left', ...(i === 1 ? { paddingLeft: '0.5rem', paddingRight: '0.5rem' } : {}), ...(i === 2 ? { paddingLeft: '0.75rem', paddingRight: '0.75rem' } : {}) }}>
-                  {h}
-                </div>
-              ))}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 1px 110px 1px 110px', background: '#0d1117' }}>
+              <div style={{ padding: '0.85rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Descrição</div>
+              <div style={{ padding: '0.85rem 0.5rem', fontSize: '0.72rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right' }}>Qtd</div>
+              <div style={{ background: 'rgba(255,255,255,0.1)' }}></div>
+              <div style={{ padding: '0.85rem 0.75rem', fontSize: '0.72rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right' }}>Valor unit.</div>
+              <div style={{ background: 'rgba(255,255,255,0.1)' }}></div>
+              <div style={{ padding: '0.85rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right' }}>Total</div>
             </div>
 
             <ItemTable list={items.filter(i => i.sort_order < 1000)} title="Serviços" />
             <ItemTable list={items.filter(i => i.sort_order >= 1000)} title="Produtos" />
 
             {/* Total geral */}
-            <div style={{ background: '#0d1117', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.25rem' }}>
-              <div style={{ flex: 1, textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', paddingRight: '1.5rem' }}>Total Geral</div>
-              <div style={{ fontWeight: 800, color: '#c8511a', fontSize: '1.1rem', whiteSpace: 'nowrap', minWidth: 150, textAlign: 'right', paddingRight: '0.25rem' }}>{formatCurrency(total)}</div>
+            <div style={{ background: '#0d1117', display: 'grid', gridTemplateColumns: '1fr 60px 1px 110px 1px 110px' }}>
+              <div style={{ padding: '1rem 1.25rem', gridColumn: '1/6', textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Total Geral</div>
+              <div style={{ padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 800, color: tenant?.primary_color || '#c8511a', fontSize: '1.1rem', whiteSpace: 'nowrap' }}>{formatCurrency(total)}</div>
             </div>
 
             {proposal.notes && (
