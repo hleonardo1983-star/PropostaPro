@@ -30,7 +30,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push('/')
   }
 
   const nav = [
@@ -49,7 +49,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* Logo */}
         <div style={{ padding: '1.75rem 1.5rem 1.25rem' }}>
-          <span style={{ fontFamily: "'Sora',sans-serif", fontSize: '1.35rem', color: 'white', fontWeight: 700, letterSpacing: '-0.03em' }}>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.35rem', color: 'white', fontWeight: 700, letterSpacing: '-0.03em' }}>
             Proposta<span style={{ color: '#c8511a' }}>Pro</span>
           </span>
         </div>
