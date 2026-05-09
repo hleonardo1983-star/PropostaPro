@@ -181,7 +181,7 @@ export default function PublicProposalPage() {
           </div>
 
           {/* Itens com divisão serviços/produtos */}
-          <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+          <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'visible', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
             {/* Header da tabela */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 110px 110px', background: '#0d1117', padding: '0' }}>
               {['Descrição', 'Qtd', 'Valor unit.', 'Total'].map((h, i) => (
