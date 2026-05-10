@@ -99,6 +99,7 @@ export default function NewProposalPage() {
         quantity: Number(item.quantity),
         unit_price: Number(item.unit_price),
         sort_order: item.type === 'service' ? idx : 1000 + idx,
+        item_type: item.type,
       }))
       const { error: itemsError } = await supabase.from('proposal_items').insert(itemsToInsert)
       if (itemsError) throw itemsError
