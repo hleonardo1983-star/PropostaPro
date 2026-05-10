@@ -49,8 +49,8 @@ export default function PublicProposalPage() {
     load()
   }, [params.token])
 
-  const services = items.filter(i => i.sort_order < 1000)
-  const products = items.filter(i => i.sort_order >= 1000)
+  const services = items.filter(i => (i.item_type || 'service') === 'service')
+  const products = items.filter(i => i.item_type === 'product')
   const totalServices = services.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
   const totalProducts = products.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
   const total = totalServices + totalProducts
