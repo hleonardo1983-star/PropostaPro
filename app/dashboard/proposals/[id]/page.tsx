@@ -89,7 +89,7 @@ export default function ProposalDetailPage() {
       {showSendModal && (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:"1rem"}}>
           <div style={{background:"white",borderRadius:20,padding:"2.5rem",width:"100%",maxWidth:440}}>
-            <h3 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.5rem",marginBottom:"0.5rem"}}>Enviar proposta</h3>
+            <h3 style={{fontFamily:"'Plus Jakarta Sans', system-ui, sans-serif",fontSize:"1.5rem",marginBottom:"0.5rem"}}>Enviar proposta</h3>
             <p style={{color:"#7a7368",fontSize:"0.875rem",marginBottom:"2rem"}}>Escolha como enviar para o cliente</p>
 
             <div style={{marginBottom:"1.5rem"}}>
@@ -133,7 +133,7 @@ export default function ProposalDetailPage() {
           <div style={{display:"flex",alignItems:"center",gap:"0.75rem",marginBottom:"0.5rem"}}>
             <Link href="/dashboard/proposals" style={{color:"#7a7368",textDecoration:"none",fontSize:"0.875rem"}}>← Propostas</Link>
           </div>
-          <h1 style={{fontFamily:"'Fraunces',Georgia,serif",fontSize:"1.75rem",letterSpacing:"-0.02em",marginBottom:"0.5rem"}}>{proposal.title}</h1>
+          <h1 style={{fontFamily:"'Plus Jakarta Sans', system-ui, sans-serif",fontSize:"1.75rem",letterSpacing:"-0.02em",marginBottom:"0.5rem"}}>{proposal.title}</h1>
           <div style={{display:"flex",alignItems:"center",gap:"0.75rem"}}>
             <span style={{color:"#7a7368",fontSize:"0.875rem"}}>#{proposal.number}</span>
             <span style={{background:s.bg,color:s.color,padding:"0.25rem 0.65rem",borderRadius:100,fontSize:"0.75rem",fontWeight:600}}>{s.label}</span>
@@ -193,43 +193,62 @@ export default function ProposalDetailPage() {
         </div>
       </div>
 
-      {/* Items */}
-      <div style={{background:"white",borderRadius:16,border:"1px solid rgba(15,14,12,0.1)",overflow:"hidden",marginBottom:"1.5rem"}}>
-        <div style={{padding:"1.25rem 1.5rem",borderBottom:"1px solid rgba(15,14,12,0.08)"}}>
-          <h3 style={{fontWeight:600,fontSize:"0.875rem"}}>Itens do orçamento</h3>
-        </div>
-        <table style={{width:"100%",borderCollapse:"collapse"}}>
-          <thead>
-            <tr style={{borderBottom:"1px solid rgba(15,14,12,0.06)"}}>
-              {['Descrição','Qtd','Valor unit.','Total'].map(h => (
-                <th key={h} style={{padding:"0.75rem 1.5rem",textAlign:h==='Descrição'?"left":"right",fontSize:"0.78rem",fontWeight:600,color:"#7a7368",textTransform:"uppercase",letterSpacing:"0.05em"}}>{h}</th>
+      {/* Items — separados por tipo */}
+      {(() => {
+        const services = items.filter(i => (i.item_type || 'service') === 'service')
+        const products = items.filter(i => i.item_type === 'product')
+        const totalServices = services.reduce((s: number, i: any) => s + Number(i.quantity) * Number(i.unit_price), 0)
+        const totalProducts = products.reduce((s: number, i: any) => s + Number(i.quantity) * Number(i.unit_price), 0)
+
+        const colHead: React.CSSProperties = {padding:"0.65rem 1.25rem",fontSize:"0.72rem",fontWeight:700,color:"#6b7280",textTransform:"uppercase" as const,letterSpacing:"0.06em"}
+        const colCell: React.CSSProperties = {padding:"0.85rem 1.25rem",fontSize:"0.875rem"}
+
+        function SectionTable({ list, title, icon, subtotal }: { list: any[]; title: string; icon: string; subtotal: number }) {
+          if (list.length === 0) return null
+          return (
+            <div style={{background:"white",borderRadius:16,border:"1px solid rgba(13,17,23,0.08)",overflow:"hidden",marginBottom:"1rem",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
+              <div style={{background:"#0d1117",padding:"0.85rem 1.25rem",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <div style={{display:"flex",alignItems:"center",gap:"0.5rem"}}>
+                  <span>{icon}</span>
+                  <span style={{fontSize:"0.82rem",fontWeight:800,color:"white",textTransform:"uppercase",letterSpacing:"0.07em"}}>{title}</span>
+                </div>
+                <span style={{fontSize:"0.9rem",fontWeight:800,color:"#c8511a"}}>{formatCurrency(subtotal)}</span>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 80px 130px 130px",borderBottom:"1px solid rgba(13,17,23,0.08)",background:"#f9fafb"}}>
+                <div style={{...colHead}}>Descrição</div>
+                <div style={{...colHead,textAlign:"right",borderLeft:"1px solid rgba(13,17,23,0.06)"}}>Qtd</div>
+                <div style={{...colHead,textAlign:"right",borderLeft:"1px solid rgba(13,17,23,0.06)"}}>Valor unit.</div>
+                <div style={{...colHead,textAlign:"right",borderLeft:"1px solid rgba(13,17,23,0.06)"}}>Total</div>
+              </div>
+              {list.map((item: any, idx: number) => (
+                <div key={item.id} style={{display:"grid",gridTemplateColumns:"1fr 80px 130px 130px",borderBottom:"1px solid rgba(13,17,23,0.04)",background:idx%2===0?"white":"#fafafa"}}>
+                  <div style={{...colCell,fontWeight:500,color:"#0d1117"}}>{item.description}</div>
+                  <div style={{...colCell,textAlign:"right",color:"#6b7280",borderLeft:"1px solid rgba(13,17,23,0.04)"}}>{item.quantity}</div>
+                  <div style={{...colCell,textAlign:"right",color:"#6b7280",borderLeft:"1px solid rgba(13,17,23,0.04)"}}>{formatCurrency(item.unit_price)}</div>
+                  <div style={{...colCell,textAlign:"right",fontWeight:700,color:"#0d1117",borderLeft:"1px solid rgba(13,17,23,0.04)"}}>{formatCurrency(item.quantity * item.unit_price)}</div>
+                </div>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {items.map(item => (
-              <tr key={item.id} style={{borderBottom:"1px solid rgba(15,14,12,0.04)"}}>
-                <td style={{padding:"0.9rem 1.5rem",fontSize:"0.875rem"}}>{item.description}</td>
-                <td style={{padding:"0.9rem 1.5rem",fontSize:"0.875rem",textAlign:"right",color:"#7a7368"}}>{item.quantity}</td>
-                <td style={{padding:"0.9rem 1.5rem",fontSize:"0.875rem",textAlign:"right",color:"#7a7368"}}>{formatCurrency(item.unit_price)}</td>
-                <td style={{padding:"0.9rem 1.5rem",fontSize:"0.875rem",textAlign:"right",fontWeight:600}}>{formatCurrency(item.quantity * item.unit_price)}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr style={{borderTop:"2px solid rgba(15,14,12,0.1)"}}>
-              <td colSpan={3} style={{padding:"1rem 1.5rem",fontSize:"0.9rem",fontWeight:600,textAlign:"right"}}>Total</td>
-              <td style={{padding:"1rem 1.5rem",fontSize:"1.1rem",fontWeight:700,textAlign:"right",color:"#c8511a",fontFamily:"'Fraunces',Georgia,serif"}}>{formatCurrency(total)}</td>
-            </tr>
-          </tfoot>
-        </table>
-        {proposal.notes && (
-          <div style={{padding:"1.25rem 1.5rem",borderTop:"1px solid rgba(15,14,12,0.08)",background:"#f5f0e8"}}>
-            <p style={{fontSize:"0.8rem",fontWeight:600,color:"#7a7368",marginBottom:"0.35rem"}}>OBSERVAÇÕES</p>
-            <p style={{fontSize:"0.875rem",lineHeight:1.6}}>{proposal.notes}</p>
-          </div>
-        )}
-      </div>
+            </div>
+          )
+        }
+
+        return (
+          <>
+            <SectionTable list={services} title="Serviços" icon="🛠️" subtotal={totalServices} />
+            <SectionTable list={products} title="Produtos" icon="📦" subtotal={totalProducts} />
+            <div style={{background:"#0d1117",borderRadius:16,padding:"1.25rem 1.5rem",marginBottom:"1.5rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:"1rem",fontWeight:700,color:"rgba(255,255,255,0.7)"}}>Total Geral da Proposta</span>
+              <span style={{fontSize:"1.25rem",fontWeight:800,color:"#c8511a"}}>{formatCurrency(total)}</span>
+            </div>
+            {proposal.notes && (
+              <div style={{background:"white",borderRadius:16,border:"1px solid rgba(13,17,23,0.08)",padding:"1.5rem",marginBottom:"1.5rem"}}>
+                <p style={{fontSize:"0.72rem",fontWeight:700,color:"#9ca3af",marginBottom:"0.5rem",textTransform:"uppercase",letterSpacing:"0.06em"}}>Observações</p>
+                <p style={{fontSize:"0.875rem",lineHeight:1.65,color:"#374151"}}>{proposal.notes}</p>
+              </div>
+            )}
+          </>
+        )
+      })()}
     </div>
   )
 }
