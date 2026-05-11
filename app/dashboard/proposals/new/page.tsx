@@ -130,7 +130,8 @@ export default function NewProposalPage() {
   const [clientId, setClientId] = useState('')
   const [clients, setClients] = useState<any[]>([])
   const [items, setItems] = useState<Item[]>([
-    { id: '1', description: '', quantity: 1, unit_price: 0, unit_price_display: '', type: 'service' }
+    { id: '1', description: '', quantity: 1, unit_price: 0, unit_price_display: '', type: 'service' },
+    { id: '2', description: '', quantity: 1, unit_price: 0, unit_price_display: '', type: 'product' },
   ])
   const [loading, setLoading] = useState(false)
   const [tenantId, setTenantId] = useState('')
