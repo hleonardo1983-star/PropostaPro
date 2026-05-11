@@ -109,22 +109,22 @@ export default function PublicProposalPage() {
         </div>
         {/* Cabeçalho das colunas */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.08)', background: '#f9fafb' }}>
-          <div style={{ padding: '0.65rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Descrição</div>
-          <div style={{ padding: '0.65rem 0.75rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Qtd</div>
-          <div style={{ padding: '0.65rem 0.75rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Valor unit.</div>
-          <div style={{ padding: '0.65rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Total</div>
+          <div style={{ padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Descrição</div>
+          <div style={{ padding: '0.5rem 0.75rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Qtd</div>
+          <div style={{ padding: '0.5rem 0.75rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Valor unit.</div>
+          <div style={{ padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Total</div>
         </div>
         {/* Itens */}
         {list.map((item, idx) => (
           <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
-            <div style={{ padding: '0.85rem 1.25rem', fontSize: '0.9rem', color: '#0d1117', fontWeight: 500 }}>{item.description}</div>
-            <div style={{ padding: '0.85rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{item.quantity}</div>
-            <div style={{ padding: '0.85rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.unit_price)}</div>
-            <div style={{ padding: '0.85rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 700, color: '#0d1117', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
+            <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.9rem', color: '#0d1117', fontWeight: 500 }}>{item.description}</div>
+            <div style={{ padding: '0.6rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{item.quantity}</div>
+            <div style={{ padding: '0.6rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.unit_price)}</div>
+            <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 700, color: '#0d1117', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
           </div>
         ))}
         {/* Subtotal */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1.5rem', padding: '0.85rem 1.25rem', background: '#f9fafb', borderTop: '2px solid rgba(13,17,23,0.08)' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1.5rem', padding: '0.6rem 1.25rem', background: '#f9fafb', borderTop: '2px solid rgba(13,17,23,0.08)' }}>
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6b7280' }}>Subtotal {title}</span>
           <span style={{ fontSize: '1rem', fontWeight: 800, color: accent, minWidth: 120, textAlign: 'right' }}>{formatCurrency(subtotal)}</span>
         </div>
