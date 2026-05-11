@@ -56,6 +56,15 @@ export default function PublicProposalPage() {
   const total = totalServices + totalProducts
   const accent = tenant?.primary_color || '#c8511a'
 
+  function handlePrint() {
+    const originalTitle = document.title
+    document.title = ' '
+    setTimeout(() => {
+      window.print()
+      document.title = originalTitle
+    }, 100)
+  }
+
   async function handleSign() {
     if (!signerName.trim()) { alert('Digite seu nome completo para assinar'); return }
     setSigning(true)
@@ -130,7 +139,13 @@ export default function PublicProposalPage() {
         * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; box-sizing: border-box; }
         @media print {
           .no-print { display: none !important; }
-          @page { margin: 15mm; size: A4; }
+          @page { 
+            margin: 15mm; 
+            size: A4;
+            margin-header: 0;
+            margin-footer: 0;
+          }
+          head title { display: none; }
           body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
       `}</style>
@@ -144,7 +159,7 @@ export default function PublicProposalPage() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {signed && <span style={{ background: 'rgba(5,150,105,0.1)', color: '#065f46', padding: '0.3rem 0.8rem', borderRadius: 100, fontSize: '0.8rem', fontWeight: 700 }}>✅ Assinada</span>}
-            <button onClick={() => window.print()}
+            <button onClick={handlePrint}
               style={{ background: '#0d1117', color: 'white', border: 'none', padding: '0.6rem 1.25rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, fontFamily: font }}>
               ⬇️ Baixar PDF
             </button>
@@ -232,7 +247,7 @@ export default function PublicProposalPage() {
               <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>✅</div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#065f46', marginBottom: '0.5rem' }}>Proposta aceita!</h3>
               <p style={{ color: '#065f46', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                Assinado por <strong>{proposal.signer_name}</strong><br />
+                Assinado por <strong>{proposal.signer_name || signerName}</strong><br />
                 {proposal.signed_at && new Date(proposal.signed_at).toLocaleString('pt-BR')}
               </p>
               {proposal.signature_hash && <p style={{ fontSize: '0.72rem', color: 'rgba(6,95,70,0.5)', marginTop: '0.75rem' }}>Hash: {proposal.signature_hash}</p>}
