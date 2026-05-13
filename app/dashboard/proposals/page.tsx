@@ -84,9 +84,16 @@ export default function ProposalsPage() {
           <h1 style={{ fontFamily: font, fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Propostas</h1>
           <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>{proposals.length} proposta{proposals.length !== 1 ? 's' : ''} no total</p>
         </div>
-        <Link href="/dashboard/proposals/new" style={{ background: '#c8511a', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
-          + Nova proposta
-        </Link>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Link href="/dashboard/proposals/ai"
+            style={{ background: 'linear-gradient(135deg, #c8511a, #7c3aed)', color: 'white', padding: '0.7rem 1.25rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            ✨ Proposta com IA
+          </Link>
+          <Link href="/dashboard/proposals/new"
+            style={{ background: '#0d1117', color: 'white', padding: '0.7rem 1.25rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700 }}>
+            + Nova proposta
+          </Link>
+        </div>
       </div>
 
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
