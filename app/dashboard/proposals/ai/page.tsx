@@ -62,39 +62,20 @@ export default function AIProposalPage() {
     setGenerating(true)
     setError('')
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/ai/generate-proposal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: `Você é especialista em propostas comerciais profissionais brasileiras.
-Com base na descrição abaixo, gere um JSON com os dados da proposta.
-
-Descrição: "${description}"
-
-Retorne APENAS um JSON válido, sem markdown, sem texto extra, neste formato exato:
-{"title":"título profissional da proposta","notes":"condições comerciais, prazo e pagamento","valid_until":"${new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0]}","client_name":"nome do cliente ou vazio","client_email":"email ou vazio","client_phone":"telefone ou vazio","services":[{"description":"serviço detalhado","quantity":1,"unit_price":0,"type":"service"}],"products":[{"description":"produto detalhado","quantity":1,"unit_price":0,"type":"product"}]}
-
-Regras:
-- services: apenas serviços (consultoria, desenvolvimento, manutenção, etc)
-- products: apenas produtos físicos ou licenças. Se não houver, retorne []
-- unit_price como número sem formatação (ex: 1500.00)
-- Título objetivo e profissional
-- Notes com condições de pagamento e prazo sugeridos`
-          }]
-        })
+        body: JSON.stringify({ description })
       })
-      const data = await response.json()
-      const text = data.content?.[0]?.text || ''
-      const clean = text.replace(/```json|```/g, '').trim()
-      const parsed: GeneratedProposal = JSON.parse(clean)
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error || 'Erro na geração')
+      }
+      const parsed: GeneratedProposal = await response.json()
       setGenerated(parsed)
       setStep('review')
-    } catch {
-      setError('Erro ao gerar proposta. Tente descrever com mais detalhes.')
+    } catch (err: any) {
+      setError(err.message || 'Erro ao gerar proposta. Tente descrever com mais detalhes.')
     }
     setGenerating(false)
   }
