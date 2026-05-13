@@ -36,8 +36,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const nav = [
     { href: '/dashboard', label: 'Dashboard', icon: '▣' },
     { href: '/dashboard/proposals', label: 'Propostas', icon: '◧' },
+    { href: '/dashboard/proposals/ai', label: 'Proposta com IA ✨', icon: '◈' },
     { href: '/dashboard/clients', label: 'Clientes', icon: '◉' },
-    { href: '/dashboard/receivables', label: 'Contas a receber', icon: '◈' },
+    { href: '/dashboard/receivables', label: 'Contas a receber', icon: '◆' },
   ]
 
   const isSettings = pathname === '/dashboard/settings'
@@ -86,9 +87,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: '0.7rem 0.9rem', borderRadius: 10,
                 textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500,
-                background: active ? 'rgba(200,81,26,0.18)' : 'transparent',
-                color: active ? '#e8673a' : 'rgba(255,255,255,0.55)',
+                background: item.href === '/dashboard/proposals/ai'
+                  ? active ? 'linear-gradient(135deg, rgba(200,81,26,0.3), rgba(124,58,237,0.3))' : 'linear-gradient(135deg, rgba(200,81,26,0.12), rgba(124,58,237,0.12))'
+                  : active ? 'rgba(200,81,26,0.18)' : 'transparent',
+                color: item.href === '/dashboard/proposals/ai'
+                  ? active ? '#e8a87c' : 'rgba(232,168,124,0.8)'
+                  : active ? '#e8673a' : 'rgba(255,255,255,0.55)',
                 transition: 'all 0.15s',
+                border: item.href === '/dashboard/proposals/ai' ? '1px solid rgba(200,81,26,0.2)' : 'none',
               }}>
                 <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>{item.icon}</span>
                 {item.label}
