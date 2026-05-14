@@ -36,7 +36,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const nav = [
     { href: '/dashboard', label: 'Dashboard', icon: '▣' },
     { href: '/dashboard/proposals', label: 'Propostas', icon: '◧' },
-    { href: '/dashboard/proposals/ai', label: 'Proposta com IA ✨', icon: '◈' },
     { href: '/dashboard/clients', label: 'Clientes', icon: '◉' },
     { href: '/dashboard/receivables', label: 'Contas a receber', icon: '◆' },
   ]
