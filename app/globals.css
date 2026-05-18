@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0d1117;
+  --cream: #f8f7f4;
+  --warm: #f0ede6;
+  --accent: #c8511a;
+  --accent-light: #e8673a;
+  --muted: #6b7280;
+  --green: #065f46;
+  --green-light: #059669;
+  --border: rgba(13,17,23,0.1);
+  --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--cream);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
