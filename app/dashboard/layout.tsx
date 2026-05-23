@@ -14,6 +14,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [companyName, setCompanyName] = useState('')
   const [trialDaysLeft, setTrialDaysLeft] = useState<number | null>(null)
   const [plan, setPlan] = useState('free')
+  const [isMaster, setIsMaster] = useState(false)
 
   useEffect(() => {
     async function loadUser() {
@@ -21,11 +22,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       if (!user) return
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, tenant_id, tenants(name, plan, created_at)')
+        .select('full_name, is_master, tenant_id, tenants(name, plan, created_at)')
         .eq('id', user.id).single()
       if (profile) {
         setUserName(profile.full_name || '')
         setCompanyName((profile.tenants as any)?.name || '')
+        setIsMaster(profile.is_master || false)
         const tenantPlan = (profile.tenants as any)?.plan || 'free'
         setPlan(tenantPlan)
         if (!tenantPlan || tenantPlan === 'free') {
@@ -45,12 +47,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   const nav = [
-    { href: '/dashboard', label: 'Dashboard', icon: '▣' },
-    { href: '/dashboard/proposals', label: 'Propostas', icon: '◧' },
-    { href: '/dashboard/clients', label: 'Clientes', icon: '◉' },
-    { href: '/dashboard/receivables', label: 'Contas a receber', icon: '◆' },
-    { href: '/dashboard/reports', label: 'Relatórios', icon: '◈' },
-    { href: '/dashboard/plans', label: 'Planos', icon: '★' },
+    { href: '/dashboard',              label: 'Dashboard',        icon: '▣', masterOnly: false },
+    { href: '/dashboard/proposals',    label: 'Propostas',        icon: '◧', masterOnly: false },
+    { href: '/dashboard/clients',      label: 'Clientes',         icon: '◉', masterOnly: false },
+    { href: '/dashboard/receivables',  label: 'Contas a receber', icon: '◆', masterOnly: false },
+    { href: '/dashboard/reports',      label: 'Relatórios',       icon: '◈', masterOnly: false },
+    { href: '/dashboard/users',        label: 'Usuários',         icon: '◎', masterOnly: true  },
+    { href: '/dashboard/plans',        label: 'Planos',           icon: '★', masterOnly: false },
   ]
 
   const isSettings = pathname === '/dashboard/settings'
@@ -98,7 +101,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         )}
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.2rem', padding: '0 0.75rem' }}>
-          {nav.map(item => {
+          {nav.filter(item => !item.masterOnly || isMaster).map(item => {
             const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
             const isPlans = item.href === '/dashboard/plans'
             return (
