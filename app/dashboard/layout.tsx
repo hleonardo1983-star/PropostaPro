@@ -4,12 +4,16 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
 
+const font = "'Plus Jakarta Sans', system-ui, sans-serif"
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
   const [userName, setUserName] = useState('')
   const [companyName, setCompanyName] = useState('')
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number | null>(null)
+  const [plan, setPlan] = useState('free')
 
   useEffect(() => {
     async function loadUser() {
@@ -17,12 +21,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       if (!user) return
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, tenants(name)')
-        .eq('id', user.id)
-        .single()
+        .select('full_name, tenant_id, tenants(name, plan, created_at)')
+        .eq('id', user.id).single()
       if (profile) {
         setUserName(profile.full_name || '')
         setCompanyName((profile.tenants as any)?.name || '')
+        const tenantPlan = (profile.tenants as any)?.plan || 'free'
+        setPlan(tenantPlan)
+        if (!tenantPlan || tenantPlan === 'free') {
+          const created = new Date((profile.tenants as any)?.created_at || user.created_at)
+          const trialEnd = new Date(created.getTime() + 14 * 86400000)
+          const daysLeft = Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86400000))
+          setTrialDaysLeft(daysLeft)
+        }
       }
     }
     loadUser()
@@ -38,35 +49,43 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { href: '/dashboard/proposals', label: 'Propostas', icon: '◧' },
     { href: '/dashboard/clients', label: 'Clientes', icon: '◉' },
     { href: '/dashboard/receivables', label: 'Contas a receber', icon: '◆' },
-    { href: '/dashboard/reports', label: 'Relatórios', icon: '◉' },
+    { href: '/dashboard/reports', label: 'Relatórios', icon: '◈' },
+    { href: '/dashboard/plans', label: 'Planos', icon: '★' },
   ]
 
   const isSettings = pathname === '/dashboard/settings'
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f7f4' }}>
-      {/* Sidebar */}
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f7f4', fontFamily: font }}>
       <aside style={{ width: 256, background: '#111827', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'fixed', top: 0, left: 0, bottom: 0 }}>
-
-        {/* Logo */}
         <div style={{ padding: '1.75rem 1.5rem 1.25rem' }}>
-          <span style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: '1.35rem', color: 'white', fontWeight: 700, letterSpacing: '-0.03em' }}>
+          <span style={{ fontFamily: font, fontSize: '1.35rem', color: 'white', fontWeight: 700, letterSpacing: '-0.03em' }}>
             Proposta<span style={{ color: '#c8511a' }}>Pro</span>
           </span>
         </div>
 
-        {/* User info — clicável para configurações */}
+        {trialDaysLeft !== null && plan === 'free' && (
+          <Link href="/dashboard/plans" style={{
+            margin: '0 0.75rem 0.75rem', padding: '0.75rem 1rem',
+            background: trialDaysLeft <= 3 ? 'rgba(200,81,26,0.25)' : 'rgba(5,150,105,0.15)',
+            borderRadius: 10, border: `1px solid ${trialDaysLeft <= 3 ? 'rgba(200,81,26,0.4)' : 'rgba(5,150,105,0.3)'}`,
+            textDecoration: 'none', display: 'block',
+          }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: trialDaysLeft <= 3 ? '#e8673a' : '#34d399', marginBottom: '0.1rem' }}>
+              {trialDaysLeft > 0 ? `⏳ ${trialDaysLeft} dias de trial` : '⚠️ Trial expirado'}
+            </p>
+            <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>
+              {trialDaysLeft > 0 ? 'Clique para fazer upgrade' : 'Limite: 5 propostas/mês'}
+            </p>
+          </Link>
+        )}
+
         {(userName || companyName) && (
           <Link href="/dashboard/settings" style={{
-            margin: '0 0.75rem 1.25rem',
-            padding: '0.9rem 1rem',
+            margin: '0 0.75rem 1.25rem', padding: '0.9rem 1rem',
             background: isSettings ? 'rgba(200,81,26,0.18)' : 'rgba(255,255,255,0.06)',
-            borderRadius: 12,
-            border: isSettings ? '1px solid rgba(200,81,26,0.3)' : '1px solid rgba(255,255,255,0.08)',
-            textDecoration: 'none',
-            display: 'block',
-            transition: 'all 0.15s',
-            cursor: 'pointer',
+            borderRadius: 12, border: isSettings ? '1px solid rgba(200,81,26,0.3)' : '1px solid rgba(255,255,255,0.08)',
+            textDecoration: 'none', display: 'block',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
@@ -78,23 +97,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </Link>
         )}
 
-        {/* Nav */}
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.2rem', padding: '0 0.75rem' }}>
           {nav.map(item => {
             const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
+            const isPlans = item.href === '/dashboard/plans'
             return (
               <Link key={item.href} href={item.href} style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: '0.7rem 0.9rem', borderRadius: 10,
                 textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500,
-                background: item.href === '/dashboard/proposals/ai'
-                  ? active ? 'linear-gradient(135deg, rgba(200,81,26,0.3), rgba(124,58,237,0.3))' : 'linear-gradient(135deg, rgba(200,81,26,0.12), rgba(124,58,237,0.12))'
-                  : active ? 'rgba(200,81,26,0.18)' : 'transparent',
-                color: item.href === '/dashboard/proposals/ai'
-                  ? active ? '#e8a87c' : 'rgba(232,168,124,0.8)'
-                  : active ? '#e8673a' : 'rgba(255,255,255,0.55)',
+                background: active ? 'rgba(200,81,26,0.18)' : isPlans ? 'rgba(255,255,255,0.04)' : 'transparent',
+                color: active ? '#e8673a' : isPlans ? 'rgba(255,215,0,0.75)' : 'rgba(255,255,255,0.55)',
+                border: isPlans && !active ? '1px solid rgba(255,255,255,0.08)' : 'none',
                 transition: 'all 0.15s',
-                border: item.href === '/dashboard/proposals/ai' ? '1px solid rgba(200,81,26,0.2)' : 'none',
               }}>
                 <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>{item.icon}</span>
                 {item.label}
@@ -103,15 +118,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        {/* Footer */}
         <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-          <button onClick={logout} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.35)', fontSize: '0.82rem', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'inherit' }}>
+          <button onClick={logout} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.35)', fontSize: '0.82rem', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: font }}>
             ↩ Sair da conta
           </button>
         </div>
       </aside>
 
-      {/* Main */}
       <main style={{ flex: 1, marginLeft: 256, overflow: 'auto', padding: '2.5rem 3rem', minHeight: '100vh' }}>
         {children}
       </main>

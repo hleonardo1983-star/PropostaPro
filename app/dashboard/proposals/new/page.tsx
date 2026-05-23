@@ -29,22 +29,13 @@ const inputStyle: React.CSSProperties = {
   border: '1.5px solid rgba(13,17,23,0.15)', fontSize: '0.9rem',
   outline: 'none', background: 'white', fontFamily: font, color: '#0d1117',
 }
-const labelStyle: React.CSSProperties = {
-  fontSize: '0.82rem', fontWeight: 700, display: 'block', marginBottom: '0.4rem', color: '#374151'
-}
+const labelStyle: React.CSSProperties = { fontSize: '0.82rem', fontWeight: 700, display: 'block', marginBottom: '0.4rem', color: '#374151' }
 
-// ItemBlock fora do componente principal para evitar perda de foco
 interface ItemBlockProps {
-  type: 'service' | 'product'
-  icon: string
-  label: string
-  list: Item[]
-  subtotal: number
-  onAdd: () => void
-  onRemove: (id: string) => void
+  type: 'service' | 'product'; icon: string; label: string; list: Item[]
+  subtotal: number; onAdd: () => void; onRemove: (id: string) => void
   onUpdate: (id: string, field: string, value: any) => void
-  onPriceInput: (id: string, raw: string) => void
-  canRemove: boolean
+  onPriceInput: (id: string, raw: string) => void; canRemove: boolean
 }
 
 function ItemBlock({ type, icon, label, list, subtotal, onAdd, onRemove, onUpdate, onPriceInput, canRemove }: ItemBlockProps) {
@@ -53,16 +44,13 @@ function ItemBlock({ type, icon, label, list, subtotal, onAdd, onRemove, onUpdat
       <div style={{ background: '#0d1117', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span>{icon}</span>
-          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'white', letterSpacing: '-0.01em' }}>{label}</span>
+          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'white' }}>{label}</span>
           <span style={{ background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.8)', fontSize: '0.72rem', fontWeight: 700, padding: '0.15rem 0.6rem', borderRadius: 100 }}>
             {list.length} item{list.length !== 1 ? 's' : ''}
           </span>
         </div>
-        {list.length > 0 && (
-          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#c8511a' }}>{formatCurrency(subtotal)}</span>
-        )}
+        {list.length > 0 && <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#c8511a' }}>{formatCurrency(subtotal)}</span>}
       </div>
-
       <div style={{ padding: '1.5rem' }}>
         {list.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
@@ -70,40 +58,19 @@ function ItemBlock({ type, icon, label, list, subtotal, onAdd, onRemove, onUpdat
               <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 90px 150px 36px', gap: '0.75rem', alignItems: 'end' }}>
                 <div>
                   {idx === 0 && <label style={labelStyle}>Descrição *</label>}
-                  <input
-                    value={item.description}
-                    onChange={e => onUpdate(item.id, 'description', e.target.value)}
-                    style={inputStyle}
-                    placeholder={type === 'service' ? 'Ex: Consultoria mensal' : 'Ex: Notebook Dell'}
-                  />
+                  <input value={item.description} onChange={e => onUpdate(item.id, 'description', e.target.value)} style={inputStyle} placeholder={type === 'service' ? 'Ex: Consultoria mensal' : 'Ex: Notebook Dell'} />
                 </div>
                 <div>
                   {idx === 0 && <label style={labelStyle}>Qtd</label>}
-                  <input
-                    type="number"
-                    value={item.quantity}
-                    min={1}
-                    step={0.01}
-                    onChange={e => onUpdate(item.id, 'quantity', parseFloat(e.target.value) || 1)}
-                    style={inputStyle}
-                  />
+                  <input type="number" value={item.quantity} min={1} step={0.01} onChange={e => onUpdate(item.id, 'quantity', parseFloat(e.target.value) || 1)} style={inputStyle} />
                 </div>
                 <div>
                   {idx === 0 && <label style={labelStyle}>Valor unitário</label>}
-                  <input
-                    value={item.unit_price_display}
-                    onChange={e => onPriceInput(item.id, e.target.value)}
-                    style={inputStyle}
-                    placeholder="R$ 0,00"
-                    inputMode="numeric"
-                  />
+                  <input value={item.unit_price_display} onChange={e => onPriceInput(item.id, e.target.value)} style={inputStyle} placeholder="R$ 0,00" inputMode="numeric" />
                 </div>
                 <div>
                   {idx === 0 && <label style={labelStyle}>&nbsp;</label>}
-                  <button
-                    type="button"
-                    onClick={() => onRemove(item.id)}
-                    disabled={!canRemove && list.length === 1}
+                  <button type="button" onClick={() => onRemove(item.id)} disabled={!canRemove && list.length === 1}
                     style={{ width: 36, height: 38, borderRadius: 8, border: '1px solid rgba(13,17,23,0.15)', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', fontSize: '0.9rem' }}>
                     ✕
                   </button>
@@ -112,10 +79,7 @@ function ItemBlock({ type, icon, label, list, subtotal, onAdd, onRemove, onUpdat
             ))}
           </div>
         )}
-        <button
-          type="button"
-          onClick={onAdd}
-          style={{ background: 'transparent', border: '1.5px dashed rgba(13,17,23,0.2)', color: '#6b7280', padding: '0.6rem 1.2rem', borderRadius: 10, cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, fontFamily: font }}>
+        <button type="button" onClick={onAdd} style={{ background: 'transparent', border: '1.5px dashed rgba(13,17,23,0.2)', color: '#6b7280', padding: '0.6rem 1.2rem', borderRadius: 10, cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, fontFamily: font }}>
           + Adicionar {type === 'service' ? 'serviço' : 'produto'}
         </button>
       </div>
@@ -126,7 +90,8 @@ function ItemBlock({ type, icon, label, list, subtotal, onAdd, onRemove, onUpdat
 export default function NewProposalPage() {
   const [title, setTitle] = useState('')
   const [notes, setNotes] = useState('')
-  const [validUntil, setValidUntil] = useState('')
+  const defaultValidUntil = new Date(Date.now() + 10 * 86400000).toISOString().split('T')[0]
+  const [validUntil, setValidUntil] = useState(defaultValidUntil)
   const [clientId, setClientId] = useState('')
   const [clients, setClients] = useState<any[]>([])
   const [items, setItems] = useState<Item[]>([
@@ -191,14 +156,10 @@ export default function NewProposalPage() {
         number: proposalCount, title, notes: notes || null, valid_until: validUntil || null, status: 'draft',
       }).select().single()
       if (error) throw error
-
       const itemsToInsert = allItems.map((item, idx) => ({
-        proposal_id: proposal.id,
-        description: item.description,
-        quantity: Number(item.quantity),
-        unit_price: Number(item.unit_price),
-        sort_order: item.type === 'service' ? idx : 1000 + idx,
-        item_type: item.type,
+        proposal_id: proposal.id, description: item.description,
+        quantity: Number(item.quantity), unit_price: Number(item.unit_price),
+        sort_order: item.type === 'service' ? idx : 1000 + idx, item_type: item.type,
       }))
       const { error: itemsError } = await supabase.from('proposal_items').insert(itemsToInsert)
       if (itemsError) throw itemsError
@@ -215,7 +176,6 @@ export default function NewProposalPage() {
         <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Nova proposta</h1>
         <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>Proposta #{proposalCount}</p>
       </div>
-
       <form onSubmit={handleSubmit}>
         <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', padding: '2rem', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
           <h2 style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '1.5rem', color: '#0d1117' }}>Informações gerais</h2>
@@ -237,23 +197,18 @@ export default function NewProposalPage() {
             </div>
             <div style={{ gridColumn: '1/-1' }}>
               <label style={labelStyle}>Observações / Condições</label>
-              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3}
-                style={{ ...inputStyle, resize: 'vertical' }} placeholder="Ex: Pagamento em 3x, prazo de entrega 30 dias..." />
+              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Ex: Pagamento em 3x, prazo de entrega 30 dias..." />
             </div>
           </div>
         </div>
 
-        <ItemBlock
-          type="service" icon="🛠️" label="Serviços" list={services} subtotal={totalServices}
+        <ItemBlock type="service" icon="🛠️" label="Serviços" list={services} subtotal={totalServices}
           onAdd={() => addItem('service')} onRemove={removeItem} onUpdate={updateItem}
-          onPriceInput={handlePriceInput} canRemove={items.length > 1}
-        />
+          onPriceInput={handlePriceInput} canRemove={items.length > 1} />
 
-        <ItemBlock
-          type="product" icon="📦" label="Produtos" list={products} subtotal={totalProducts}
+        <ItemBlock type="product" icon="📦" label="Produtos" list={products} subtotal={totalProducts}
           onAdd={() => addItem('product')} onRemove={removeItem} onUpdate={updateItem}
-          onPriceInput={handlePriceInput} canRemove={items.length > 1}
-        />
+          onPriceInput={handlePriceInput} canRemove={items.length > 1} />
 
         <div style={{ background: '#0d1117', borderRadius: 16, padding: '1.25rem 1.75rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '1rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Total da proposta</span>
@@ -261,12 +216,8 @@ export default function NewProposalPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-          <button type="button" onClick={() => router.back()}
-            style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, fontFamily: font }}>
-            Cancelar
-          </button>
-          <button type="submit" disabled={loading}
-            style={{ background: '#c8511a', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, opacity: loading ? 0.7 : 1, fontFamily: font }}>
+          <button type="button" onClick={() => router.back()} style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, fontFamily: font }}>Cancelar</button>
+          <button type="submit" disabled={loading} style={{ background: '#c8511a', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, opacity: loading ? 0.7 : 1, fontFamily: font }}>
             {loading ? 'Salvando...' : 'Salvar proposta →'}
           </button>
         </div>
