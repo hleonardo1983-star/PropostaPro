@@ -21,7 +21,7 @@ export default function ProposalsPage() {
     sent:     { label: 'Enviada',     color: '#1d4ed8', bg: 'rgba(29,78,216,0.1)'   },
     viewed:   { label: 'Visualizada', color: '#7c3aed', bg: 'rgba(124,58,237,0.1)'  },
     signed:   { label: 'Assinada',    color: '#065f46', bg: 'rgba(5,150,105,0.1)'   },
-    rejected: { label: 'Recusada',    color: '#c8511a', bg: 'rgba(200,81,26,0.1)'   },
+    rejected: { label: 'Recusada',    color: '#0f766e', bg: 'rgba(15,118,110,0.1)'   },
   }
 
   async function load() {
@@ -84,7 +84,7 @@ export default function ProposalsPage() {
           <h1 style={{ fontFamily: font, fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Propostas</h1>
           <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>{proposals.length} proposta{proposals.length !== 1 ? 's' : ''} no total</p>
         </div>
-        <Link href="/dashboard/proposals/new" style={{ background: '#c8511a', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
+        <Link href="/dashboard/proposals/new" style={{ background: '#0f766e', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
           + Nova proposta
         </Link>
       </div>
@@ -96,7 +96,7 @@ export default function ProposalsPage() {
           <div style={{ padding: '4rem', textAlign: 'center', color: '#6b7280' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📝</div>
             <p style={{ marginBottom: '1rem', fontWeight: 500 }}>Nenhuma proposta ainda</p>
-            <Link href="/dashboard/proposals/new" style={{ color: '#c8511a', fontWeight: 700, textDecoration: 'none' }}>Criar primeira proposta →</Link>
+            <Link href="/dashboard/proposals/new" style={{ color: '#0f766e', fontWeight: 700, textDecoration: 'none' }}>Criar primeira proposta →</Link>
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -124,7 +124,7 @@ export default function ProposalsPage() {
                     <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', color: '#6b7280', fontWeight: 500 }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
                     <td style={{ padding: '1rem 1.25rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <Link href={`/dashboard/proposals/${p.id}`} style={{ color: '#c8511a', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                        <Link href={`/dashboard/proposals/${p.id}`} style={{ color: '#0f766e', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
                           Ver →
                         </Link>
                         <button onClick={() => setConfirmId(p.id)}

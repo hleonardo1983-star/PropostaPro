@@ -59,7 +59,7 @@ export default function PlansPage() {
   const plans = [
     { id: 'free',         name: 'Free',         price: 0,   period: 'para sempre', desc: 'Para conhecer a plataforma',    limit: 5,      userLimit: 1, features: ['5 propostas/mês','1 usuário','Assinatura digital','Contas a receber','WhatsApp + E-mail'], missing: ['Relatórios','Multi-usuário'], color: '#6b7280', featured: false },
     { id: 'starter',      name: 'Starter',       price: 49,  period: '/mês',        desc: 'Para freelancers e autônomos', limit: 10,     userLimit: 1, features: ['10 propostas/mês','1 usuário master','Assinatura digital','Contas a receber','WhatsApp + E-mail','1 relatório/mês'], missing: ['Multi-usuário'], color: '#1d4ed8', featured: false },
-    { id: 'professional', name: 'Profissional',  price: 99,  period: '/mês',        desc: 'Para pequenas empresas',       limit: 30,     userLimit: 3, features: ['30 propostas/mês','3 usuários','Assinatura digital','Contas a receber','WhatsApp + E-mail','3 relatórios/mês','Gestão de usuários'], missing: [], color: '#c8511a', featured: true },
+    { id: 'professional', name: 'Profissional',  price: 99,  period: '/mês',        desc: 'Para pequenas empresas',       limit: 30,     userLimit: 3, features: ['30 propostas/mês','3 usuários','Assinatura digital','Contas a receber','WhatsApp + E-mail','3 relatórios/mês','Gestão de usuários'], missing: [], color: '#0f766e', featured: true },
     { id: 'business',     name: 'Business',      price: 199, period: '/mês',        desc: 'Para equipes e empresas',      limit: 999999, userLimit: 999, features: ['Propostas ilimitadas','Usuários ilimitados','Assinatura digital','Contas a receber','WhatsApp + E-mail','Relatórios ilimitados','Gestão de usuários','Suporte prioritário'], missing: [], color: '#7c3aed', featured: false },
   ]
 
@@ -131,7 +131,7 @@ export default function PlansPage() {
       {downgradeModal && targetPlanData && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
           <div style={{ background: 'white', borderRadius: 20, padding: '2.5rem', width: '100%', maxWidth: 480, boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-            <div style={{ width: 56, height: 56, background: 'rgba(200,81,26,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>⚠️</div>
+            <div style={{ width: 56, height: 56, background: 'rgba(15,118,110,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>⚠️</div>
             <h3 style={{ fontFamily: font, fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.5rem', color: '#0d1117', textAlign: 'center' }}>
               Atenção — Limite de usuários
             </h3>
@@ -147,13 +147,13 @@ export default function PlansPage() {
                 return (
                   <div key={u.id}
                     onClick={() => toggleUser(u.id, isMaster)}
-                    style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', borderRadius: 10, border: `1.5px solid ${isSelected ? '#c8511a' : 'rgba(13,17,23,0.1)'}`, background: isSelected ? 'rgba(200,81,26,0.05)' : 'white', cursor: isMaster ? 'default' : 'pointer', transition: 'all 0.15s' }}>
-                    <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${isSelected ? '#c8511a' : '#d1d5db'}`, background: isSelected ? '#c8511a' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.15s' }}>
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', borderRadius: 10, border: `1.5px solid ${isSelected ? '#0f766e' : 'rgba(13,17,23,0.1)'}`, background: isSelected ? 'rgba(15,118,110,0.05)' : 'white', cursor: isMaster ? 'default' : 'pointer', transition: 'all 0.15s' }}>
+                    <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${isSelected ? '#0f766e' : '#d1d5db'}`, background: isSelected ? '#0f766e' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.15s' }}>
                       {isSelected && <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 700 }}>✓</span>}
                     </div>
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0d1117', marginBottom: '0.1rem' }}>{u.full_name || 'Sem nome'}</p>
-                      {isMaster && <p style={{ fontSize: '0.72rem', color: '#c8511a', fontWeight: 600 }}>Master — obrigatório</p>}
+                      {isMaster && <p style={{ fontSize: '0.72rem', color: '#0f766e', fontWeight: 600 }}>Master — obrigatório</p>}
                     </div>
                     {!isSelected && !isMaster && <span style={{ fontSize: '0.72rem', color: '#9ca3af', fontWeight: 500 }}>será suspenso</span>}
                   </div>
@@ -162,7 +162,7 @@ export default function PlansPage() {
             </div>
 
             {!canConfirmDowngrade && (
-              <p style={{ fontSize: '0.82rem', color: '#c8511a', fontWeight: 600, marginBottom: '1rem', textAlign: 'center' }}>
+              <p style={{ fontSize: '0.82rem', color: '#0f766e', fontWeight: 600, marginBottom: '1rem', textAlign: 'center' }}>
                 ⚠️ Selecione no máximo {newUserLimit} usuário{newUserLimit > 1 ? 's' : ''} para o plano {targetPlanData.name}.
               </p>
             )}
@@ -178,7 +178,7 @@ export default function PlansPage() {
               <button
                 onClick={() => executePlanChange(downgradeModal.targetPlan, selectedUsers)}
                 disabled={!canConfirmDowngrade || processing}
-                style={{ flex: 1, background: canConfirmDowngrade ? '#c8511a' : '#d1d5db', color: 'white', border: 'none', padding: '0.75rem', borderRadius: 100, cursor: canConfirmDowngrade ? 'pointer' : 'not-allowed', fontSize: '0.875rem', fontWeight: 700, fontFamily: font, opacity: processing ? 0.7 : 1 }}>
+                style={{ flex: 1, background: canConfirmDowngrade ? '#0f766e' : '#d1d5db', color: 'white', border: 'none', padding: '0.75rem', borderRadius: 100, cursor: canConfirmDowngrade ? 'pointer' : 'not-allowed', fontSize: '0.875rem', fontWeight: 700, fontFamily: font, opacity: processing ? 0.7 : 1 }}>
                 {processing ? 'Processando...' : 'Confirmar downgrade'}
               </button>
             </div>
@@ -204,9 +204,9 @@ export default function PlansPage() {
             </div>
           </div>
           {trialDaysLeft !== null && (
-            <div style={{ background: trialDaysLeft <= 3 ? 'rgba(200,81,26,0.08)' : 'rgba(5,150,105,0.08)', border: `1px solid ${trialDaysLeft <= 3 ? 'rgba(200,81,26,0.2)' : 'rgba(5,150,105,0.2)'}`, borderRadius: 12, padding: '0.85rem 1.25rem', textAlign: 'center' }}>
-              <p style={{ fontSize: '1.5rem', fontWeight: 800, color: trialDaysLeft <= 3 ? '#c8511a' : '#065f46', lineHeight: 1 }}>{trialDaysLeft > 0 ? trialDaysLeft : '!'}</p>
-              <p style={{ fontSize: '0.75rem', fontWeight: 600, color: trialDaysLeft <= 3 ? '#c8511a' : '#065f46' }}>{trialDaysLeft > 0 ? 'dias de trial' : 'Trial expirado'}</p>
+            <div style={{ background: trialDaysLeft <= 3 ? 'rgba(15,118,110,0.08)' : 'rgba(5,150,105,0.08)', border: `1px solid ${trialDaysLeft <= 3 ? 'rgba(15,118,110,0.2)' : 'rgba(5,150,105,0.2)'}`, borderRadius: 12, padding: '0.85rem 1.25rem', textAlign: 'center' }}>
+              <p style={{ fontSize: '1.5rem', fontWeight: 800, color: trialDaysLeft <= 3 ? '#0f766e' : '#065f46', lineHeight: 1 }}>{trialDaysLeft > 0 ? trialDaysLeft : '!'}</p>
+              <p style={{ fontSize: '0.75rem', fontWeight: 600, color: trialDaysLeft <= 3 ? '#0f766e' : '#065f46' }}>{trialDaysLeft > 0 ? 'dias de trial' : 'Trial expirado'}</p>
             </div>
           )}
         </div>
@@ -214,12 +214,12 @@ export default function PlansPage() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
               <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#374151' }}>Propostas este mês</span>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: proposalPercent >= 80 ? '#c8511a' : '#0d1117' }}>{proposalsUsed} / {currentPlanData.limit}</span>
+              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: proposalPercent >= 80 ? '#0f766e' : '#0d1117' }}>{proposalsUsed} / {currentPlanData.limit}</span>
             </div>
             <div style={{ height: 8, background: '#f3f4f6', borderRadius: 100, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${proposalPercent}%`, background: proposalPercent >= 80 ? '#c8511a' : '#059669', borderRadius: 100, transition: 'width 0.5s ease' }}></div>
+              <div style={{ height: '100%', width: `${proposalPercent}%`, background: proposalPercent >= 80 ? '#0f766e' : '#059669', borderRadius: 100, transition: 'width 0.5s ease' }}></div>
             </div>
-            {proposalPercent >= 80 && <p style={{ fontSize: '0.78rem', color: '#c8511a', marginTop: '0.4rem', fontWeight: 500 }}>{proposalPercent >= 100 ? '⚠️ Limite atingido! Faça upgrade para continuar.' : `⚡ Você usou ${proposalPercent}% do seu limite mensal.`}</p>}
+            {proposalPercent >= 80 && <p style={{ fontSize: '0.78rem', color: '#0f766e', marginTop: '0.4rem', fontWeight: 500 }}>{proposalPercent >= 100 ? '⚠️ Limite atingido! Faça upgrade para continuar.' : `⚡ Você usou ${proposalPercent}% do seu limite mensal.`}</p>}
           </div>
         )}
       </div>
@@ -235,7 +235,7 @@ export default function PlansPage() {
           return (
             <div key={plan.id} style={{ background: plan.featured ? '#0d1117' : 'white', borderRadius: 16, border: isCurrent ? `2px solid ${plan.color}` : plan.featured ? 'none' : '1px solid rgba(13,17,23,0.08)', padding: '1.75rem', position: 'relative', boxShadow: plan.featured ? '0 8px 32px rgba(0,0,0,0.15)' : '0 1px 4px rgba(0,0,0,0.04)' }}>
               {isCurrent && <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: plan.color, color: 'white', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.25rem 0.75rem', borderRadius: 100, whiteSpace: 'nowrap' }}>Plano atual</div>}
-              {plan.featured && !isCurrent && <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#c8511a', color: 'white', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.25rem 0.75rem', borderRadius: 100, whiteSpace: 'nowrap' }}>⚡ Mais popular</div>}
+              {plan.featured && !isCurrent && <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#0f766e', color: 'white', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.25rem 0.75rem', borderRadius: 100, whiteSpace: 'nowrap' }}>⚡ Mais popular</div>}
               <div style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: plan.featured ? 'rgba(255,255,255,0.5)' : '#9ca3af', marginBottom: '0.5rem' }}>{plan.name}</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.2rem', marginBottom: '0.25rem' }}>
                 {plan.price > 0 && <span style={{ fontSize: '0.85rem', color: plan.featured ? 'rgba(255,255,255,0.5)' : '#6b7280' }}>R$</span>}
@@ -245,7 +245,7 @@ export default function PlansPage() {
               <p style={{ fontSize: '0.8rem', color: plan.featured ? 'rgba(255,255,255,0.45)' : '#6b7280', marginBottom: '1.25rem', lineHeight: 1.5 }}>{plan.desc}</p>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '1.5rem' }}>
                 {plan.features.map(f => <li key={f} style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: plan.featured ? 'rgba(255,255,255,0.8)' : '#374151' }}>
-                  <span style={{ color: plan.featured ? '#c8511a' : '#059669', fontWeight: 700 }}>✓</span>{f}
+                  <span style={{ color: plan.featured ? '#0f766e' : '#059669', fontWeight: 700 }}>✓</span>{f}
                 </li>)}
                 {plan.missing.map(f => <li key={f} style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: plan.featured ? 'rgba(255,255,255,0.2)' : '#d1d5db' }}>
                   <span style={{ fontWeight: 700 }}>—</span>{f}
@@ -254,7 +254,7 @@ export default function PlansPage() {
               {isCurrent ? (
                 <div style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: `${plan.color}18`, color: plan.color, fontSize: '0.85rem', fontWeight: 700, textAlign: 'center', border: `1.5px solid ${plan.color}40` }}>✓ Plano ativo</div>
               ) : isUpgrade ? (
-                <button onClick={() => handlePlanClick(plan)} style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: plan.featured ? '#c8511a' : '#0d1117', color: 'white', border: 'none', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', fontFamily: font }}>Fazer upgrade →</button>
+                <button onClick={() => handlePlanClick(plan)} style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: plan.featured ? '#0f766e' : '#0d1117', color: 'white', border: 'none', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', fontFamily: font }}>Fazer upgrade →</button>
               ) : isDowngrade ? (
                 <button onClick={() => handlePlanClick(plan)} style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: 'transparent', color: '#6b7280', border: '1.5px solid rgba(13,17,23,0.15)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: font }}>Fazer downgrade</button>
               ) : null}

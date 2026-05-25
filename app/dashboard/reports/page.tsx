@@ -72,7 +72,7 @@ export default function ReportsPage() {
         {[
           { label: 'Total Faturado', value: formatCurrency(totalAll), icon: '💼', color: '#0d1117', bg: 'white' },
           { label: 'Recebido', value: formatCurrency(totalReceived), icon: '✅', color: '#065f46', bg: 'rgba(5,150,105,0.06)' },
-          { label: 'A Receber', value: formatCurrency(totalPending), icon: '⏳', color: '#c8511a', bg: 'rgba(200,81,26,0.06)' },
+          { label: 'A Receber', value: formatCurrency(totalPending), icon: '⏳', color: '#0f766e', bg: 'rgba(15,118,110,0.06)' },
           { label: 'Vencido', value: formatCurrency(totalOverdue), icon: '⚠️', color: '#991b1b', bg: 'rgba(153,27,27,0.06)' },
           { label: 'Taxa de Conversão', value: `${conversionRate}%`, icon: '📊', color: '#1d4ed8', bg: 'rgba(29,78,216,0.06)' },
           { label: 'Propostas', value: String(proposals.length), icon: '📝', color: '#7c3aed', bg: 'rgba(124,58,237,0.06)' },
@@ -144,7 +144,7 @@ export default function ReportsPage() {
               {receivables.map(r => {
                 const statusMap: Record<string, { label: string; color: string; bg: string }> = {
                   paid:      { label: 'Pago',      color: '#065f46', bg: 'rgba(5,150,105,0.1)'   },
-                  pending:   { label: 'Pendente',  color: '#c8511a', bg: 'rgba(200,81,26,0.1)'   },
+                  pending:   { label: 'Pendente',  color: '#0f766e', bg: 'rgba(15,118,110,0.1)'   },
                   overdue:   { label: 'Vencido',   color: '#991b1b', bg: 'rgba(153,27,27,0.1)'   },
                   cancelled: { label: 'Cancelado', color: '#6b7280', bg: 'rgba(107,114,128,0.1)' },
                 }
@@ -167,7 +167,7 @@ export default function ReportsPage() {
             <tfoot>
               <tr style={{ background: '#0d1117' }}>
                 <td colSpan={2} style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)' }}>Total do período</td>
-                <td style={{ padding: '1rem 1.25rem', fontSize: '1rem', fontWeight: 800, color: '#c8511a' }}>{formatCurrency(totalAll)}</td>
+                <td style={{ padding: '1rem 1.25rem', fontSize: '1rem', fontWeight: 800, color: '#0f766e' }}>{formatCurrency(totalAll)}</td>
                 <td colSpan={2}></td>
               </tr>
             </tfoot>

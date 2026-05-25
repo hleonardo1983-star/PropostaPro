@@ -6,7 +6,7 @@ const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState({ full_name: '', role: '' })
-  const [company, setCompany] = useState({ name: '', primary_color: '#c8511a', logo_url: '' })
+  const [company, setCompany] = useState({ name: '', primary_color: '#0f766e', logo_url: '' })
   const [tenantId, setTenantId] = useState('')
   const [userId, setUserId] = useState('')
   const [loading, setLoading] = useState(true)
@@ -33,7 +33,7 @@ export default function SettingsPage() {
         setTenantId(data.tenant_id)
         setCompany({
           name: (data.tenants as any)?.name || '',
-          primary_color: (data.tenants as any)?.primary_color || '#c8511a',
+          primary_color: (data.tenants as any)?.primary_color || '#0f766e',
           logo_url: (data.tenants as any)?.logo_url || '',
         })
       }
@@ -118,7 +118,7 @@ export default function SettingsPage() {
             <input value={profile.role} style={{ ...inputStyle, background: '#f9fafb', color: '#9ca3af' }} disabled />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            {msgProfile && <span style={{ fontSize: '0.85rem', color: msgProfile.includes('Erro') ? '#c8511a' : '#059669', fontWeight: 600 }}>{msgProfile.includes('Erro') ? '✕ ' : '✓ '}{msgProfile}</span>}
+            {msgProfile && <span style={{ fontSize: '0.85rem', color: msgProfile.includes('Erro') ? '#0f766e' : '#059669', fontWeight: 600 }}>{msgProfile.includes('Erro') ? '✕ ' : '✓ '}{msgProfile}</span>}
             <button type="submit" disabled={savingProfile} style={{ marginLeft: 'auto', background: '#0d1117', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', fontFamily: font, opacity: savingProfile ? 0.7 : 1 }}>
               {savingProfile ? 'Salvando...' : 'Salvar dados'}
             </button>
@@ -181,7 +181,7 @@ export default function SettingsPage() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            {msgCompany && <span style={{ fontSize: '0.85rem', color: msgCompany.includes('Erro') ? '#c8511a' : '#059669', fontWeight: 600 }}>{msgCompany.includes('Erro') ? '✕ ' : '✓ '}{msgCompany}</span>}
+            {msgCompany && <span style={{ fontSize: '0.85rem', color: msgCompany.includes('Erro') ? '#0f766e' : '#059669', fontWeight: 600 }}>{msgCompany.includes('Erro') ? '✕ ' : '✓ '}{msgCompany}</span>}
             <button type="submit" disabled={savingCompany} style={{ marginLeft: 'auto', background: '#0d1117', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', fontFamily: font, opacity: savingCompany ? 0.7 : 1 }}>
               {savingCompany ? 'Salvando...' : 'Salvar empresa'}
             </button>

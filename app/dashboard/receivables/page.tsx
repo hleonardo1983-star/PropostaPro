@@ -59,7 +59,7 @@ export default function ReceivablesPage() {
   }
 
   const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
-    pending:   { label: 'Pendente',   color: '#c8511a', bg: 'rgba(200,81,26,0.1)'   },
+    pending:   { label: 'Pendente',   color: '#0f766e', bg: 'rgba(15,118,110,0.1)'   },
     paid:      { label: 'Pago',       color: '#065f46', bg: 'rgba(5,150,105,0.1)'   },
     overdue:   { label: 'Vencido',    color: '#991b1b', bg: 'rgba(153,27,27,0.1)'   },
     cancelled: { label: 'Cancelado',  color: '#6b7280', bg: 'rgba(107,114,128,0.1)' },
@@ -120,7 +120,7 @@ export default function ReceivablesPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: '1rem', marginBottom: '2rem' }}>
         <div style={{ background: 'white', borderRadius: 16, padding: '1.5rem', border: '1px solid rgba(13,17,23,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
           <div style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>⏳</div>
-          <div style={{ fontFamily: font, fontSize: '1.6rem', fontWeight: 800, color: '#c8511a', letterSpacing: '-0.03em' }}>{formatCurrency(totalPending)}</div>
+          <div style={{ fontFamily: font, fontSize: '1.6rem', fontWeight: 800, color: '#0f766e', letterSpacing: '-0.03em' }}>{formatCurrency(totalPending)}</div>
           <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.25rem', fontWeight: 500 }}>Pendente a receber</div>
         </div>
         <div style={{ background: 'white', borderRadius: 16, padding: '1.5rem', border: '1px solid rgba(13,17,23,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>

@@ -151,7 +151,7 @@ export default function AIProposalPage() {
   return (
     <div style={{ maxWidth: 780, fontFamily: font }}>
       <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <div style={{ background: 'linear-gradient(135deg, #c8511a, #7c3aed)', borderRadius: 14, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>✨</div>
+        <div style={{ background: 'linear-gradient(135deg, #0f766e, #7c3aed)', borderRadius: 14, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>✨</div>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#0d1117', lineHeight: 1 }}>Proposta Perfeita com IA</h1>
           <p style={{ color: '#6b7280', fontSize: '0.875rem', fontWeight: 500, marginTop: '0.25rem' }}>Descreva em linguagem natural e a IA cria sua proposta em segundos</p>
@@ -189,7 +189,7 @@ export default function AIProposalPage() {
             </div>
           </div>
 
-          {error && <div style={{ background: 'rgba(200,81,26,0.08)', border: '1px solid rgba(200,81,26,0.2)', borderRadius: 10, padding: '0.85rem 1rem', color: '#c8511a', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 500 }}>{error}</div>}
+          {error && <div style={{ background: 'rgba(15,118,110,0.08)', border: '1px solid rgba(15,118,110,0.2)', borderRadius: 10, padding: '0.85rem 1rem', color: '#0f766e', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 500 }}>{error}</div>}
 
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
             <button type="button" onClick={() => router.back()}
@@ -197,7 +197,7 @@ export default function AIProposalPage() {
               Cancelar
             </button>
             <button type="button" onClick={generateProposal} disabled={generating || !description.trim()}
-              style={{ background: generating || !description.trim() ? '#d1d5db' : 'linear-gradient(135deg, #c8511a, #7c3aed)', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: generating || !description.trim() ? 'not-allowed' : 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font }}>
+              style={{ background: generating || !description.trim() ? '#d1d5db' : 'linear-gradient(135deg, #0f766e, #7c3aed)', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: generating || !description.trim() ? 'not-allowed' : 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font }}>
               {generating ? '⟳ Gerando...' : '✨ Gerar Proposta com IA'}
             </button>
           </div>
@@ -265,7 +265,7 @@ export default function AIProposalPage() {
                   <span>🛠️</span>
                   <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Serviços</span>
                 </div>
-                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#c8511a' }}>{formatCurrency(totalServices)}</span>
+                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f766e' }}>{formatCurrency(totalServices)}</span>
               </div>
               <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {generated.services.map((item, idx) => (
@@ -295,7 +295,7 @@ export default function AIProposalPage() {
                   <span>📦</span>
                   <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Produtos</span>
                 </div>
-                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#c8511a' }}>{formatCurrency(totalProducts)}</span>
+                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f766e' }}>{formatCurrency(totalProducts)}</span>
               </div>
               <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {generated.products.map((item, idx) => (
@@ -320,10 +320,10 @@ export default function AIProposalPage() {
 
           <div style={{ background: '#0d1117', borderRadius: 16, padding: '1.25rem 1.75rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '1rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Total da proposta</span>
-            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#c8511a', letterSpacing: '-0.02em' }}>{formatCurrency(total)}</span>
+            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f766e', letterSpacing: '-0.02em' }}>{formatCurrency(total)}</span>
           </div>
 
-          {error && <div style={{ background: 'rgba(200,81,26,0.08)', border: '1px solid rgba(200,81,26,0.2)', borderRadius: 10, padding: '0.85rem 1rem', color: '#c8511a', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 500 }}>{error}</div>}
+          {error && <div style={{ background: 'rgba(15,118,110,0.08)', border: '1px solid rgba(15,118,110,0.2)', borderRadius: 10, padding: '0.85rem 1rem', color: '#0f766e', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: 500 }}>{error}</div>}
 
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
             <button onClick={() => { setStep('input'); setGenerated(null) }}
@@ -331,7 +331,7 @@ export default function AIProposalPage() {
               ← Redigitar
             </button>
             <button onClick={saveProposal}
-              style={{ background: '#c8511a', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font }}>
+              style={{ background: '#0f766e', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font }}>
               Salvar proposta →
             </button>
           </div>

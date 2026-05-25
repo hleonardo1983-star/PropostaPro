@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
     <div style="padding:2.5rem;">
       <h2 style="font-size:1.5rem;margin:0 0 0.75rem;color:#0f0e0c;">Você recebeu uma proposta!</h2>
       <p style="color:#7a7368;line-height:1.6;margin:0 0 2rem;">A proposta <strong style="color:#0f0e0c;">${title}</strong> está aguardando sua análise e assinatura.</p>
-      <a href="${link}" style="display:inline-block;background:#c8511a;color:white;padding:0.9rem 2rem;border-radius:100px;text-decoration:none;font-weight:600;font-size:1rem;">Ver e assinar proposta</a>
-      <p style="color:#7a7368;font-size:0.8rem;margin-top:2rem;">Ou acesse: <a href="${link}" style="color:#c8511a;">${link}</a></p>
+      <a href="${link}" style="display:inline-block;background:#0f766e;color:white;padding:0.9rem 2rem;border-radius:100px;text-decoration:none;font-weight:600;font-size:1rem;">Ver e assinar proposta</a>
+      <p style="color:#7a7368;font-size:0.8rem;margin-top:2rem;">Ou acesse: <a href="${link}" style="color:#0f766e;">${link}</a></p>
     </div>
   </div>
 </body>

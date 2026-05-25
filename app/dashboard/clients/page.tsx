@@ -43,7 +43,7 @@ export default function ClientsPage() {
           <p style={{color:"#7a7368",fontSize:"0.9rem"}}>{clients.length} cliente{clients.length !== 1 ? 's' : ''}</p>
         </div>
         <button onClick={()=>setShowForm(!showForm)}
-          style={{background:"#c8511a",color:"white",padding:"0.65rem 1.5rem",borderRadius:100,border:"none",cursor:"pointer",fontWeight:600,fontSize:"0.875rem"}}>
+          style={{background:"#0f766e",color:"white",padding:"0.65rem 1.5rem",borderRadius:100,border:"none",cursor:"pointer",fontWeight:600,fontSize:"0.875rem"}}>
           + Novo cliente
         </button>
       </div>
@@ -75,7 +75,7 @@ export default function ClientsPage() {
               Cancelar
             </button>
             <button type="submit" disabled={saving}
-              style={{background:"#c8511a",color:"white",padding:"0.6rem 1.5rem",borderRadius:100,border:"none",cursor:"pointer",fontSize:"0.875rem",fontWeight:600}}>
+              style={{background:"#0f766e",color:"white",padding:"0.6rem 1.5rem",borderRadius:100,border:"none",cursor:"pointer",fontSize:"0.875rem",fontWeight:600}}>
               {saving ? 'Salvando...' : 'Salvar'}
             </button>
           </div>

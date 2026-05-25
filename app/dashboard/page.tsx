@@ -45,7 +45,7 @@ export default function DashboardPage() {
     sent:     { label: 'Enviada',     color: '#1d4ed8', bg: 'rgba(29,78,216,0.1)'   },
     viewed:   { label: 'Visualizada', color: '#7c3aed', bg: 'rgba(124,58,237,0.1)'  },
     signed:   { label: 'Assinada',    color: '#065f46', bg: 'rgba(5,150,105,0.1)'   },
-    rejected: { label: 'Recusada',    color: '#c8511a', bg: 'rgba(200,81,26,0.1)'   },
+    rejected: { label: 'Recusada',    color: '#0f766e', bg: 'rgba(15,118,110,0.1)'   },
   }
 
   if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', color: '#6b7280', fontFamily: font }}>Carregando...</div>
@@ -63,7 +63,7 @@ export default function DashboardPage() {
         {[
           { label: 'Total de propostas', value: stats.proposals, icon: '📋', color: '#0d1117' },
           { label: 'Assinadas',          value: stats.signed,    icon: '✅', color: '#065f46' },
-          { label: 'Aguardando',         value: stats.pending,   icon: '⏳', color: '#c8511a' },
+          { label: 'Aguardando',         value: stats.pending,   icon: '⏳', color: '#0f766e' },
           { label: 'A receber',          value: formatCurrency(stats.receivables), icon: '💰', color: '#1d4ed8' },
         ].map(s => (
           <div key={s.label} style={{ background: 'white', borderRadius: 16, padding: '1.5rem', border: '1px solid rgba(13,17,23,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
@@ -77,14 +77,14 @@ export default function DashboardPage() {
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
         <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(13,17,23,0.06)' }}>
           <h2 style={{ fontWeight: 700, fontSize: '1rem', color: '#0d1117' }}>Propostas recentes</h2>
-          <Link href="/dashboard/proposals/new" style={{ background: '#c8511a', color: 'white', padding: '0.5rem 1.2rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700 }}>
+          <Link href="/dashboard/proposals/new" style={{ background: '#0f766e', color: 'white', padding: '0.5rem 1.2rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700 }}>
             + Nova proposta
           </Link>
         </div>
         {recent.length === 0 ? (
           <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
             <p style={{ fontSize: '1rem', marginBottom: '1rem' }}>Nenhuma proposta ainda</p>
-            <Link href="/dashboard/proposals/new" style={{ color: '#c8511a', fontWeight: 700, textDecoration: 'none' }}>Criar primeira proposta →</Link>
+            <Link href="/dashboard/proposals/new" style={{ color: '#0f766e', fontWeight: 700, textDecoration: 'none' }}>Criar primeira proposta →</Link>
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>

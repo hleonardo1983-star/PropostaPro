@@ -54,7 +54,7 @@ export default function PublicProposalPage() {
   const totalServices = services.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
   const totalProducts = products.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
   const total = totalServices + totalProducts
-  const accent = tenant?.primary_color || '#c8511a'
+  const accent = tenant?.primary_color || '#0f766e'
 
   function handlePrint() {
     const originalTitle = document.title

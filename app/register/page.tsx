@@ -51,7 +51,7 @@ export default function RegisterPage() {
       <div style={{ background: "white", borderRadius: 24, padding: "3rem", width: "100%", maxWidth: 440, border: "1px solid rgba(17,24,39,0.08)", boxShadow: "0 24px 64px rgba(17,24,39,0.1)" }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <Link href="/" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: "1.6rem", color: "#111827", textDecoration: "none", fontWeight: 700, letterSpacing: "-0.03em" }}>
-            Proposta<span style={{ color: "#c8511a" }}>Pro</span>
+            Proposta<span style={{ color: "#0f766e" }}>Pro</span>
           </Link>
           <p style={{ color: "#6b7280", marginTop: "0.5rem", fontSize: "0.9rem" }}>Crie sua conta grátis</p>
         </div>
@@ -69,7 +69,7 @@ export default function RegisterPage() {
 
           <div>
             <label style={{ fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.4rem", color: "#374151" }}>
-              E-mail <span style={{ color: "#c8511a" }}>*</span>
+              E-mail <span style={{ color: "#0f766e" }}>*</span>
             </label>
             <input type="email" value={form.email} onChange={set('email')} required style={inputStyle} placeholder="voce@empresa.com" />
           </div>
@@ -97,19 +97,19 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div style={{ background: "rgba(200,81,26,0.08)", border: "1px solid rgba(200,81,26,0.2)", borderRadius: 8, padding: "0.75rem 1rem", color: "#c8511a", fontSize: "0.85rem" }}>
+            <div style={{ background: "rgba(15,118,110,0.08)", border: "1px solid rgba(15,118,110,0.2)", borderRadius: 8, padding: "0.75rem 1rem", color: "#0f766e", fontSize: "0.85rem" }}>
               {error}
             </div>
           )}
 
-          <button type="submit" disabled={loading} style={{ background: loading ? "#d1d5db" : "#c8511a", color: "white", padding: "0.9rem", borderRadius: 100, border: "none", fontWeight: 700, fontSize: "1rem", cursor: loading ? "not-allowed" : "pointer", marginTop: "0.5rem", fontFamily: "inherit", transition: "background 0.2s" }}>
+          <button type="submit" disabled={loading} style={{ background: loading ? "#d1d5db" : "#0f766e", color: "white", padding: "0.9rem", borderRadius: 100, border: "none", fontWeight: 700, fontSize: "1rem", cursor: loading ? "not-allowed" : "pointer", marginTop: "0.5rem", fontFamily: "inherit", transition: "background 0.2s" }}>
             {loading ? 'Criando conta...' : 'Criar conta grátis →'}
           </button>
         </form>
 
         <p style={{ textAlign: "center", marginTop: "1.5rem", fontSize: "0.875rem", color: "#6b7280" }}>
           Já tem conta?{' '}
-          <Link href="/login" style={{ color: "#c8511a", fontWeight: 600, textDecoration: "none" }}>Entrar</Link>
+          <Link href="/login" style={{ color: "#0f766e", fontWeight: 600, textDecoration: "none" }}>Entrar</Link>
         </p>
       </div>
     </div>

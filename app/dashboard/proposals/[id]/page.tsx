@@ -75,7 +75,7 @@ export default function ProposalDetailPage() {
     sent: { label: 'Enviada', color: '#1d4ed8', bg: 'rgba(29,78,216,0.1)' },
     viewed: { label: 'Visualizada', color: '#7c3aed', bg: 'rgba(124,58,237,0.1)' },
     signed: { label: 'Assinada ✓', color: '#2d6a4f', bg: 'rgba(45,106,79,0.1)' },
-    rejected: { label: 'Recusada', color: '#c8511a', bg: 'rgba(200,81,26,0.1)' },
+    rejected: { label: 'Recusada', color: '#0f766e', bg: 'rgba(15,118,110,0.1)' },
   }
 
   if (loading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"50vh",color:"#7a7368"}}>Carregando...</div>
@@ -116,7 +116,7 @@ export default function ProposalDetailPage() {
 
             <div style={{marginTop:"1.5rem",background:"#f5f0e8",borderRadius:10,padding:"1rem"}}>
               <p style={{fontSize:"0.8rem",color:"#7a7368",marginBottom:"0.5rem",fontWeight:500}}>Link direto da proposta:</p>
-              <p style={{fontSize:"0.78rem",wordBreak:"break-all",color:"#c8511a"}}>{proposalLink}</p>
+              <p style={{fontSize:"0.78rem",wordBreak:"break-all",color:"#0f766e"}}>{proposalLink}</p>
             </div>
 
             <button onClick={()=>setShowSendModal(false)}
@@ -142,7 +142,7 @@ export default function ProposalDetailPage() {
         <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap"}}>
           {proposal.status === 'signed' ? null : (
             <button onClick={()=>setShowSendModal(true)}
-              style={{background:"#c8511a",color:"white",padding:"0.65rem 1.5rem",borderRadius:100,border:"none",cursor:"pointer",fontWeight:600,fontSize:"0.875rem"}}>
+              style={{background:"#0f766e",color:"white",padding:"0.65rem 1.5rem",borderRadius:100,border:"none",cursor:"pointer",fontWeight:600,fontSize:"0.875rem"}}>
               📤 Enviar proposta
             </button>
           )}
@@ -212,7 +212,7 @@ export default function ProposalDetailPage() {
                   <span>{icon}</span>
                   <span style={{fontSize:"0.82rem",fontWeight:800,color:"white",textTransform:"uppercase",letterSpacing:"0.07em"}}>{title}</span>
                 </div>
-                <span style={{fontSize:"0.9rem",fontWeight:800,color:"#c8511a"}}>{formatCurrency(subtotal)}</span>
+                <span style={{fontSize:"0.9rem",fontWeight:800,color:"#0f766e"}}>{formatCurrency(subtotal)}</span>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 80px 130px 130px",borderBottom:"1px solid rgba(13,17,23,0.08)",background:"#f9fafb"}}>
                 <div style={{...colHead}}>Descrição</div>
@@ -238,7 +238,7 @@ export default function ProposalDetailPage() {
             {renderSectionTable({ list: products, title: 'Produtos', icon: '📦', subtotal: totalProducts })}
             <div style={{background:"#0d1117",borderRadius:16,padding:"1.25rem 1.5rem",marginBottom:"1.5rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <span style={{fontSize:"1rem",fontWeight:700,color:"rgba(255,255,255,0.7)"}}>Total Geral da Proposta</span>
-              <span style={{fontSize:"1.25rem",fontWeight:800,color:"#c8511a"}}>{formatCurrency(total)}</span>
+              <span style={{fontSize:"1.25rem",fontWeight:800,color:"#0f766e"}}>{formatCurrency(total)}</span>
             </div>
             {proposal.notes && (
               <div style={{background:"white",borderRadius:16,border:"1px solid rgba(13,17,23,0.08)",padding:"1.5rem",marginBottom:"1.5rem"}}>

@@ -49,7 +49,7 @@ function ItemBlock({ type, icon, label, list, subtotal, onAdd, onRemove, onUpdat
             {list.length} item{list.length !== 1 ? 's' : ''}
           </span>
         </div>
-        {list.length > 0 && <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#c8511a' }}>{formatCurrency(subtotal)}</span>}
+        {list.length > 0 && <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f766e' }}>{formatCurrency(subtotal)}</span>}
       </div>
       <div style={{ padding: '1.5rem' }}>
         {list.length > 0 && (
@@ -213,12 +213,12 @@ export default function NewProposalPage() {
 
         <div style={{ background: '#0d1117', borderRadius: 16, padding: '1.25rem 1.75rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '1rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Total da proposta</span>
-          <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#c8511a', letterSpacing: '-0.02em' }}>{formatCurrency(total)}</span>
+          <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f766e', letterSpacing: '-0.02em' }}>{formatCurrency(total)}</span>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
           <button type="button" onClick={() => router.back()} style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, fontFamily: font }}>Cancelar</button>
-          <button type="submit" disabled={loading} style={{ background: '#c8511a', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, opacity: loading ? 0.7 : 1, fontFamily: font }}>
+          <button type="submit" disabled={loading} style={{ background: '#0f766e', color: 'white', padding: '0.7rem 2rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, opacity: loading ? 0.7 : 1, fontFamily: font }}>
             {loading ? 'Salvando...' : 'Salvar proposta →'}
           </button>
         </div>
