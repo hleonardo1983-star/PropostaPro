@@ -1,7 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { type NextRequest, NextResponse } from 'next/server'
 
-export async function proxy(request: NextRequest) {
+// ✅ FIX: A função DEVE se chamar "middleware" (não "proxy")
+// O Next.js detecta o arquivo proxy.ts mas exige export "middleware"
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isPublic =
     pathname === '/' ||
