@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { useTrialStatus } from '@/lib/trial-context'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -104,6 +105,11 @@ export default function NewProposalPage() {
   const [proposalCount, setProposalCount] = useState(1)
   const router = useRouter()
   const supabase = createClient()
+  const { isBlocked } = useTrialStatus()
+
+  useEffect(() => {
+    if (isBlocked) router.replace('/dashboard/plans')
+  }, [isBlocked])
 
   useEffect(() => {
     async function load() {
