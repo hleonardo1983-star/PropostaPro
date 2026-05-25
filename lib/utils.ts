@@ -1,16 +1,5 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
-}
-
-export function formatDate(date: string | Date): string {
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(date))
 }
 
 export function generateWhatsAppLink(phone: string, message: string): string {
@@ -18,9 +7,7 @@ export function generateWhatsAppLink(phone: string, message: string): string {
   return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`
 }
 
-export function generateSignatureHash(data: {
-  name: string; ip: string; timestamp: string; proposalId: string
-}): string {
+export function generateSignatureHash(data: { name: string; ip: string; timestamp: string; proposalId: string }): string {
   const str = `${data.name}|${data.ip}|${data.timestamp}|${data.proposalId}`
   let hash = 0
   for (let i = 0; i < str.length; i++) {
@@ -28,6 +15,5 @@ export function generateSignatureHash(data: {
     hash = ((hash << 5) - hash) + char
     hash = hash & hash
   }
-  return Math.abs(hash).toString(16).padStart(8, '0').toUpperCase() +
-    '-' + Date.now().toString(16).toUpperCase()
+  return Math.abs(hash).toString(16).padStart(8, '0').toUpperCase() + '-' + Date.now().toString(16).toUpperCase()
 }

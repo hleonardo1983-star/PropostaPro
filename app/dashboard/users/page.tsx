@@ -111,14 +111,14 @@ export default function UsersPage() {
       {confirmSuspend && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
           <div style={{ background: 'white', borderRadius: 20, padding: '2.5rem', width: '100%', maxWidth: 400, textAlign: 'center', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
-            <div style={{ width: 56, height: 56, background: 'rgba(15,118,110,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>⚠️</div>
+            <div style={{ width: 56, height: 56, background: 'rgba(37,99,235,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>⚠️</div>
             <h3 style={{ fontFamily: font, fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.5rem', color: '#0d1117' }}>Suspender usuário?</h3>
             <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '2rem', lineHeight: 1.6 }}>
               <strong>{confirmSuspend.full_name}</strong> perderá o acesso ao sistema. Os dados serão preservados e o usuário poderá ser reativado a qualquer momento.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
               <button onClick={() => setConfirmSuspend(null)} style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, fontFamily: font }}>Cancelar</button>
-              <button onClick={() => suspendUser(confirmSuspend.id)} style={{ background: '#0f766e', color: 'white', border: 'none', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.875rem', fontWeight: 700, fontFamily: font }}>Suspender</button>
+              <button onClick={() => suspendUser(confirmSuspend.id)} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.875rem', fontWeight: 700, fontFamily: font }}>Suspender</button>
             </div>
           </div>
         </div>
@@ -136,14 +136,14 @@ export default function UsersPage() {
         <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#374151' }}>Usuários ativos</span>
-            <span style={{ fontSize: '0.82rem', fontWeight: 700, color: activeUsers >= limit ? '#0f766e' : '#0d1117' }}>{activeUsers} / {limit}</span>
+            <span style={{ fontSize: '0.82rem', fontWeight: 700, color: activeUsers >= limit ? '#2563eb' : '#0d1117' }}>{activeUsers} / {limit}</span>
           </div>
           <div style={{ height: 8, background: '#f3f4f6', borderRadius: 100, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${Math.min(100, (activeUsers / limit) * 100)}%`, background: activeUsers >= limit ? '#0f766e' : '#059669', borderRadius: 100, transition: 'width 0.5s' }}></div>
+            <div style={{ height: '100%', width: `${Math.min(100, (activeUsers / limit) * 100)}%`, background: activeUsers >= limit ? '#2563eb' : '#059669', borderRadius: 100, transition: 'width 0.5s' }}></div>
           </div>
           {activeUsers >= limit && (
-            <p style={{ fontSize: '0.78rem', color: '#0f766e', marginTop: '0.4rem', fontWeight: 500 }}>
-              ⚠️ Limite atingido. <a href="/dashboard/plans" style={{ color: '#0f766e', fontWeight: 700 }}>Faça upgrade</a> para adicionar mais usuários.
+            <p style={{ fontSize: '0.78rem', color: '#2563eb', marginTop: '0.4rem', fontWeight: 500 }}>
+              ⚠️ Limite atingido. <a href="/dashboard/plans" style={{ color: '#2563eb', fontWeight: 700 }}>Faça upgrade</a> para adicionar mais usuários.
             </p>
           )}
         </div>
@@ -168,7 +168,7 @@ export default function UsersPage() {
           </button>
         </div>
         {msg && (
-          <p style={{ fontSize: '0.85rem', marginTop: '0.75rem', fontWeight: 600, color: msg.includes('Erro') || msg.includes('Limite') ? '#0f766e' : '#065f46' }}>
+          <p style={{ fontSize: '0.85rem', marginTop: '0.75rem', fontWeight: 600, color: msg.includes('Erro') || msg.includes('Limite') ? '#2563eb' : '#065f46' }}>
             {msg.includes('Erro') || msg.includes('Limite') ? '⚠️ ' : '✓ '}{msg}
           </p>
         )}
@@ -191,7 +191,7 @@ export default function UsersPage() {
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                 <td style={{ padding: '1rem 1.25rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: u.is_master ? '#0f766e' : '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 700, color: u.is_master ? 'white' : '#6b7280', flexShrink: 0 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: u.is_master ? '#2563eb' : '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 700, color: u.is_master ? 'white' : '#6b7280', flexShrink: 0 }}>
                       {(u.full_name || 'U').charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -202,7 +202,7 @@ export default function UsersPage() {
                 </td>
                 <td style={{ padding: '1rem 1.25rem' }}>
                   {u.is_master
-                    ? <span style={{ background: 'rgba(15,118,110,0.1)', color: '#0f766e', padding: '0.25rem 0.65rem', borderRadius: 100, fontSize: '0.75rem', fontWeight: 700 }}>Master</span>
+                    ? <span style={{ background: 'rgba(37,99,235,0.1)', color: '#2563eb', padding: '0.25rem 0.65rem', borderRadius: 100, fontSize: '0.75rem', fontWeight: 700 }}>Master</span>
                     : <span style={{ background: 'rgba(107,114,128,0.1)', color: '#6b7280', padding: '0.25rem 0.65rem', borderRadius: 100, fontSize: '0.75rem', fontWeight: 600 }}>Usuário</span>
                   }
                 </td>

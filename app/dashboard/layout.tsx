@@ -2,79 +2,102 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
+
+// Cache simples para evitar refetch desnecessário
+let userDataCache: any = null
+let cacheTime = 0
+const CACHE_TTL = 30000 // 30 segundos
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
-  const [userName, setUserName] = useState('')
-  const [companyName, setCompanyName] = useState('')
-  const [trialDaysLeft, setTrialDaysLeft] = useState<number | null>(null)
-  const [plan, setPlan] = useState('free')
-  const [isMaster, setIsMaster] = useState(false)
+  const [userData, setUserData] = useState<{ userName: string; companyName: string; trialDaysLeft: number | null; plan: string; isMaster: boolean }>({
+    userName: '', companyName: '', trialDaysLeft: null, plan: 'free', isMaster: false
+  })
 
-  useEffect(() => {
-    async function loadUser() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, is_master, tenant_id, tenants(name, plan, created_at)')
-        .eq('id', user.id).single()
-      if (profile) {
-        setUserName(profile.full_name || '')
-        setCompanyName((profile.tenants as any)?.name || '')
-        setIsMaster(profile.is_master || false)
-        const tenantPlan = (profile.tenants as any)?.plan || 'free'
-        setPlan(tenantPlan)
-        if (!tenantPlan || tenantPlan === 'free') {
-          const created = new Date((profile.tenants as any)?.created_at || user.created_at)
-          const trialEnd = new Date(created.getTime() + 14 * 86400000)
-          const daysLeft = Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86400000))
-          setTrialDaysLeft(daysLeft)
-        }
-      }
+  const loadUser = useCallback(async () => {
+    // Usar cache se ainda válido
+    if (userDataCache && Date.now() - cacheTime < CACHE_TTL) {
+      setUserData(userDataCache)
+      return
     }
-    loadUser()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    // Uma única query com join para evitar múltiplas chamadas
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name, is_master, tenants(name, plan, created_at)')
+      .eq('id', user.id)
+      .single()
+
+    if (!profile) return
+
+    const tenantPlan = (profile.tenants as any)?.plan || 'free'
+    let trialDaysLeft: number | null = null
+
+    if (!tenantPlan || tenantPlan === 'free') {
+      const created = new Date((profile.tenants as any)?.created_at || user.created_at)
+      const trialEnd = new Date(created.getTime() + 14 * 86400000)
+      trialDaysLeft = Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86400000))
+    }
+
+    const data = {
+      userName: profile.full_name || '',
+      companyName: (profile.tenants as any)?.name || '',
+      plan: tenantPlan,
+      isMaster: profile.is_master || false,
+      trialDaysLeft,
+    }
+
+    userDataCache = data
+    cacheTime = Date.now()
+    setUserData(data)
   }, [])
 
+  useEffect(() => { loadUser() }, [])
+
   async function logout() {
+    userDataCache = null
     await supabase.auth.signOut()
     router.push('/')
   }
 
   const nav = [
-    { href: '/dashboard',              label: 'Dashboard',        icon: '▣', masterOnly: false },
-    { href: '/dashboard/proposals',    label: 'Propostas',        icon: '◧', masterOnly: false },
-    { href: '/dashboard/clients',      label: 'Clientes',         icon: '◉', masterOnly: false },
-    { href: '/dashboard/receivables',  label: 'Contas a receber', icon: '◆', masterOnly: false },
-    { href: '/dashboard/reports',      label: 'Relatórios',       icon: '◈', masterOnly: false },
-    { href: '/dashboard/users',        label: 'Usuários',         icon: '◎', masterOnly: true  },
-    { href: '/dashboard/plans',        label: 'Planos',           icon: '★', masterOnly: false },
+    { href: '/dashboard',             label: 'Dashboard',        icon: '▣', masterOnly: false },
+    { href: '/dashboard/proposals',   label: 'Propostas',        icon: '◧', masterOnly: false },
+    { href: '/dashboard/clients',     label: 'Clientes',         icon: '◉', masterOnly: false },
+    { href: '/dashboard/receivables', label: 'Contas a receber', icon: '◆', masterOnly: false },
+    { href: '/dashboard/reports',     label: 'Relatórios',       icon: '◈', masterOnly: false },
+    { href: '/dashboard/users',       label: 'Usuários',         icon: '◎', masterOnly: true  },
+    { href: '/dashboard/plans',       label: 'Planos',           icon: '★', masterOnly: false },
   ]
 
+  const { userName, companyName, trialDaysLeft, plan, isMaster } = userData
   const isSettings = pathname === '/dashboard/settings'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f7f4', fontFamily: font }}>
-      <aside style={{ width: 256, background: '#111827', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'fixed', top: 0, left: 0, bottom: 0 }}>
+      <aside style={{ width: 256, background: '#111827', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50 }}>
         <div style={{ padding: '1.75rem 1.5rem 1.25rem' }}>
           <span style={{ fontFamily: font, fontSize: '1.35rem', color: 'white', fontWeight: 700, letterSpacing: '-0.03em' }}>
-            Proposta<span style={{ color: '#0f766e' }}>Pro</span>
+            Proposta<span style={{ color: '#2563eb' }}>Pro</span>
           </span>
         </div>
 
         {trialDaysLeft !== null && plan === 'free' && (
           <Link href="/dashboard/plans" style={{
             margin: '0 0.75rem 0.75rem', padding: '0.75rem 1rem',
-            background: trialDaysLeft <= 3 ? 'rgba(15,118,110,0.25)' : 'rgba(5,150,105,0.15)',
-            borderRadius: 10, border: `1px solid ${trialDaysLeft <= 3 ? 'rgba(15,118,110,0.4)' : 'rgba(5,150,105,0.3)'}`,
+            background: trialDaysLeft <= 3 ? 'rgba(37,99,235,0.25)' : 'rgba(5,150,105,0.15)',
+            borderRadius: 10, border: `1px solid ${trialDaysLeft <= 3 ? 'rgba(37,99,235,0.4)' : 'rgba(5,150,105,0.3)'}`,
             textDecoration: 'none', display: 'block',
           }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: trialDaysLeft <= 3 ? '#14b8a6' : '#34d399', marginBottom: '0.1rem' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: trialDaysLeft <= 3 ? '#93c5fd' : '#34d399', marginBottom: '0.1rem' }}>
               {trialDaysLeft > 0 ? `⏳ ${trialDaysLeft} dias de trial` : '⚠️ Trial expirado'}
             </p>
             <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>
@@ -86,8 +109,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {(userName || companyName) && (
           <Link href="/dashboard/settings" style={{
             margin: '0 0.75rem 1.25rem', padding: '0.9rem 1rem',
-            background: isSettings ? 'rgba(15,118,110,0.18)' : 'rgba(255,255,255,0.06)',
-            borderRadius: 12, border: isSettings ? '1px solid rgba(15,118,110,0.28)' : '1px solid rgba(255,255,255,0.08)',
+            background: isSettings ? 'rgba(37,99,235,0.18)' : 'rgba(255,255,255,0.06)',
+            borderRadius: 12, border: isSettings ? '1px solid rgba(37,99,235,0.3)' : '1px solid rgba(255,255,255,0.08)',
             textDecoration: 'none', display: 'block',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -109,8 +132,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: '0.7rem 0.9rem', borderRadius: 10,
                 textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500,
-                background: active ? 'rgba(15,118,110,0.18)' : isPlans ? 'rgba(255,255,255,0.04)' : 'transparent',
-                color: active ? '#14b8a6' : isPlans ? 'rgba(255,215,0,0.75)' : 'rgba(255,255,255,0.55)',
+                background: active ? 'rgba(37,99,235,0.18)' : isPlans ? 'rgba(255,255,255,0.04)' : 'transparent',
+                color: active ? '#93c5fd' : isPlans ? 'rgba(255,215,0,0.75)' : 'rgba(255,255,255,0.55)',
                 border: isPlans && !active ? '1px solid rgba(255,255,255,0.08)' : 'none',
                 transition: 'all 0.15s',
               }}>

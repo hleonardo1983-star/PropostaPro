@@ -21,7 +21,7 @@ export default function ProposalsPage() {
     sent:     { label: 'Enviada',     color: '#1d4ed8', bg: 'rgba(29,78,216,0.1)'   },
     viewed:   { label: 'Visualizada', color: '#7c3aed', bg: 'rgba(124,58,237,0.1)'  },
     signed:   { label: 'Assinada',    color: '#065f46', bg: 'rgba(5,150,105,0.1)'   },
-    rejected: { label: 'Recusada',    color: '#0f766e', bg: 'rgba(15,118,110,0.1)'   },
+    rejected: { label: 'Recusada',    color: '#dc2626', bg: 'rgba(220,38,38,0.1)'   },
   }
 
   async function load() {
@@ -44,9 +44,7 @@ export default function ProposalsPage() {
     await supabase.from('proposal_items').delete().eq('proposal_id', id)
     await supabase.from('receivables').delete().eq('proposal_id', id)
     await supabase.from('proposals').delete().eq('id', id)
-    setConfirmId(null)
-    setDeletingId(null)
-    load()
+    setConfirmId(null); setDeletingId(null); load()
   }
 
   function getTotal(items: any[]) {
@@ -55,23 +53,15 @@ export default function ProposalsPage() {
 
   return (
     <div style={{ fontFamily: font }}>
-
-      {/* Modal confirmação exclusão */}
       {confirmId && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
           <div style={{ background: 'white', borderRadius: 20, padding: '2.5rem', width: '100%', maxWidth: 400, textAlign: 'center', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
             <div style={{ width: 56, height: 56, background: 'rgba(220,38,38,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>🗑</div>
-            <h3 style={{ fontFamily: font, fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.5rem', color: '#0d1117' }}>Excluir proposta?</h3>
-            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>
-              Esta ação é permanente. A proposta, itens e conta a receber vinculada serão removidos.
-            </p>
+            <h3 style={{ fontFamily: font, fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.5rem' }}>Excluir proposta?</h3>
+            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>Esta ação é permanente. A proposta e conta a receber vinculada serão removidas.</p>
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-              <button onClick={() => setConfirmId(null)}
-                style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, fontFamily: font }}>
-                Cancelar
-              </button>
-              <button onClick={() => handleDelete(confirmId)} disabled={!!deletingId}
-                style={{ background: '#dc2626', color: 'white', border: 'none', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font, opacity: deletingId ? 0.7 : 1 }}>
+              <button onClick={() => setConfirmId(null)} style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, fontFamily: font }}>Cancelar</button>
+              <button onClick={() => handleDelete(confirmId)} disabled={!!deletingId} style={{ background: '#dc2626', color: 'white', border: 'none', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font, opacity: deletingId ? 0.7 : 1 }}>
                 {deletingId ? 'Excluindo...' : 'Sim, excluir'}
               </button>
             </div>
@@ -81,10 +71,10 @@ export default function ProposalsPage() {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <div>
-          <h1 style={{ fontFamily: font, fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Propostas</h1>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Propostas</h1>
           <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>{proposals.length} proposta{proposals.length !== 1 ? 's' : ''} no total</p>
         </div>
-        <Link href="/dashboard/proposals/new" style={{ background: '#0f766e', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
+        <Link href="/dashboard/proposals/new" style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
           + Nova proposta
         </Link>
       </div>
@@ -96,7 +86,7 @@ export default function ProposalsPage() {
           <div style={{ padding: '4rem', textAlign: 'center', color: '#6b7280' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📝</div>
             <p style={{ marginBottom: '1rem', fontWeight: 500 }}>Nenhuma proposta ainda</p>
-            <Link href="/dashboard/proposals/new" style={{ color: '#0f766e', fontWeight: 700, textDecoration: 'none' }}>Criar primeira proposta →</Link>
+            <Link href="/dashboard/proposals/new" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>Criar primeira proposta →</Link>
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -116,19 +106,16 @@ export default function ProposalsPage() {
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                     <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', fontWeight: 700, color: '#9ca3af' }}>#{p.number}</td>
                     <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', fontWeight: 700, color: '#0d1117' }}>{p.title}</td>
-                    <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', color: '#6b7280', fontWeight: 500 }}>{(p.clients as any)?.name || '—'}</td>
-                    <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', fontWeight: 700, color: '#0d1117' }}>{formatCurrency(getTotal(p.proposal_items))}</td>
+                    <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', color: '#6b7280' }}>{(p.clients as any)?.name || '—'}</td>
+                    <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', fontWeight: 700 }}>{formatCurrency(getTotal(p.proposal_items))}</td>
                     <td style={{ padding: '1rem 1.25rem' }}>
                       <span style={{ background: s.bg, color: s.color, padding: '0.3rem 0.75rem', borderRadius: 100, fontSize: '0.75rem', fontWeight: 700 }}>{s.label}</span>
                     </td>
-                    <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', color: '#6b7280', fontWeight: 500 }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', color: '#6b7280' }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
                     <td style={{ padding: '1rem 1.25rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <Link href={`/dashboard/proposals/${p.id}`} style={{ color: '#0f766e', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                          Ver →
-                        </Link>
-                        <button onClick={() => setConfirmId(p.id)}
-                          style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font, transition: 'all 0.15s' }}
+                      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                        <Link href={`/dashboard/proposals/${p.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700 }}>Ver →</Link>
+                        <button onClick={() => setConfirmId(p.id)} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font }}
                           onMouseEnter={e => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.borderColor = '#dc2626' }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'rgba(13,17,23,0.12)' }}>
                           Excluir
