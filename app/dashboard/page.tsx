@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { formatCurrency } from '@/lib/utils'
 import Link from 'next/link'
+import { useTrialStatus } from '@/lib/trial-context'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -12,6 +13,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [tenantName, setTenantName] = useState('')
   const supabase = createClient()
+  const { plan, trialDaysLeft, isBlocked } = useTrialStatus()
 
   useEffect(() => {
     async function load() {
@@ -54,6 +56,41 @@ export default function DashboardPage() {
         <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Olá, {tenantName} 👋</h1>
         <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Aqui está o resumo da sua conta</p>
       </div>
+
+      {/* Card de trial — só aparece no plano free */}
+      {plan === 'free' && trialDaysLeft !== null && (
+        <Link href="/dashboard/plans" style={{ textDecoration: 'none', display: 'block', marginBottom: '1.5rem' }}>
+          <div style={{
+            borderRadius: 16, padding: '1.25rem 1.5rem',
+            background: isBlocked ? 'rgba(220,38,38,0.06)' : trialDaysLeft <= 3 ? 'rgba(37,99,235,0.06)' : 'rgba(5,150,105,0.06)',
+            border: `1.5px solid ${isBlocked ? 'rgba(220,38,38,0.25)' : trialDaysLeft <= 3 ? 'rgba(37,99,235,0.2)' : 'rgba(5,150,105,0.2)'}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0,
+                background: isBlocked ? 'rgba(220,38,38,0.12)' : trialDaysLeft <= 3 ? 'rgba(37,99,235,0.12)' : 'rgba(5,150,105,0.12)',
+              }}>
+                {isBlocked ? '🔒' : trialDaysLeft <= 3 ? '⚡' : '⏳'}
+              </div>
+              <div>
+                <p style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0d1117', marginBottom: '0.15rem' }}>
+                  {isBlocked ? 'Período de avaliação encerrado' : `${trialDaysLeft} dia${trialDaysLeft !== 1 ? 's' : ''} restante${trialDaysLeft !== 1 ? 's' : ''} no plano Free`}
+                </p>
+                <p style={{ fontSize: '0.82rem', color: '#6b7280' }}>
+                  {isBlocked ? 'Seus dados estão salvos. Assine para voltar a criar e editar.' : trialDaysLeft <= 3 ? 'Seu trial está acabando! Assine agora para não perder o acesso.' : 'Ao final do trial, você poderá apenas visualizar seus dados.'}
+                </p>
+              </div>
+            </div>
+            <span style={{
+              background: isBlocked ? '#dc2626' : '#2563eb',
+              color: 'white', padding: '0.5rem 1.25rem', borderRadius: 100, fontSize: '0.85rem', fontWeight: 700, whiteSpace: 'nowrap',
+            }}>
+              {isBlocked ? 'Assinar agora →' : 'Ver planos →'}
+            </span>
+          </div>
+        </Link>
+      )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
         {[
           { label: 'Total de propostas', value: stats.proposals, icon: '📝', color: '#0d1117' },
