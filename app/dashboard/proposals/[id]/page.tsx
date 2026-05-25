@@ -31,7 +31,12 @@ export default function ProposalDetailPage() {
   useEffect(() => { load() }, [params.id])
 
   const total = items.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://propostaproapp.vercel.app'
+
+  // ✅ FIX: Usa window.location.origin em produção para evitar que o link
+  // do WhatsApp/e-mail aponte para localhost:3000 (valor do .env.local commitado).
+  const appUrl = typeof window !== 'undefined'
+    ? window.location.origin
+    : (process.env.NEXT_PUBLIC_APP_URL || '')
   const proposalLink = `${appUrl}/p/${proposal?.public_token}`
 
   async function markAsSent() {
@@ -184,7 +189,8 @@ export default function ProposalDetailPage() {
             </div>
             {proposal.valid_until && <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
               <span style={{ color: '#6b7280' }}>Válida até</span>
-              <span>{new Date(proposal.valid_until).toLocaleDateString('pt-BR')}</span>
+              {/* ✅ FIX: Adiciona T12:00:00 para evitar off-by-one por fuso horário */}
+              <span>{new Date(proposal.valid_until + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
             </div>}
           </div>
         </div>
