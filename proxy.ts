@@ -1,14 +1,14 @@
-import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { type NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
-
-  // Rotas sempre públicas — nunca redireciona
-  const publicPaths = ['/', '/login', '/register', '/p/']
-  const isPublic = publicPaths.some(p => pathname === p || pathname.startsWith('/p/'))
-
-  if (isPublic) return NextResponse.next()
+  const isPublic =
+    pathname === '/' ||
+    pathname.startsWith('/p/') ||
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/register')
 
   let supabaseResponse = NextResponse.next({ request })
   const supabase = createServerClient(
@@ -16,7 +16,9 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return request.cookies.getAll() },
+        getAll() {
+          return request.cookies.getAll()
+        },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
@@ -28,19 +30,21 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // Não logado tentando acessar área protegida → redireciona para login
   if (!user && pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Logado tentando acessar login/register → redireciona para dashboard
   if (user && (pathname === '/login' || pathname === '/register')) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  return supabaseResponse
+  if (isPublic || user) return supabaseResponse
+
+  return NextResponse.redirect(new URL('/login', request.url))
 }
 
 export const config = {
