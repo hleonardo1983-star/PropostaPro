@@ -53,7 +53,7 @@ export default function DashboardPage() {
   return (
     <div style={{ fontFamily: font }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Olá, {tenantName} 👋</h1>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Olá, {tenantName}</h1>
         <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Aqui está o resumo da sua conta</p>
       </div>
 
