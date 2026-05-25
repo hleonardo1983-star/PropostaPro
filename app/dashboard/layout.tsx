@@ -6,30 +6,29 @@ import { useEffect, useState, useCallback } from 'react'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
-// Cache simples para evitar refetch desnecessário
-let userDataCache: any = null
-let cacheTime = 0
-const CACHE_TTL = 30000 // 30 segundos
+// ✅ FIX: Cache removido — era uma variável global de módulo que persistia
+// entre sessões de usuários diferentes no mesmo processo (ex: SSR em prod,
+// ou usuário que fez logout e outro fez login sem recarregar a aba).
+// A abordagem correta é usar React state + Supabase realtime se necessário.
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
-  const [userData, setUserData] = useState<{ userName: string; companyName: string; trialDaysLeft: number | null; plan: string; isMaster: boolean }>({
+  const [userData, setUserData] = useState<{
+    userName: string
+    companyName: string
+    trialDaysLeft: number | null
+    plan: string
+    isMaster: boolean
+  }>({
     userName: '', companyName: '', trialDaysLeft: null, plan: 'free', isMaster: false
   })
 
   const loadUser = useCallback(async () => {
-    // Usar cache se ainda válido
-    if (userDataCache && Date.now() - cacheTime < CACHE_TTL) {
-      setUserData(userDataCache)
-      return
-    }
-
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
-    // Uma única query com join para evitar múltiplas chamadas
     const { data: profile } = await supabase
       .from('profiles')
       .select('full_name, is_master, tenants(name, plan, created_at)')
@@ -47,23 +46,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       trialDaysLeft = Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86400000))
     }
 
-    const data = {
+    setUserData({
       userName: profile.full_name || '',
       companyName: (profile.tenants as any)?.name || '',
       plan: tenantPlan,
       isMaster: profile.is_master || false,
       trialDaysLeft,
-    }
-
-    userDataCache = data
-    cacheTime = Date.now()
-    setUserData(data)
+    })
   }, [])
 
   useEffect(() => { loadUser() }, [])
 
   async function logout() {
-    userDataCache = null
     await supabase.auth.signOut()
     router.push('/')
   }

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useParams } from 'next/navigation'
+import { generateSignatureHash } from '@/lib/utils'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -9,21 +10,11 @@ function formatCurrency(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
-function generateSignatureHash(data: { name: string; timestamp: string; proposalId: string }): string {
-  const str = `${data.name}|${data.timestamp}|${data.proposalId}`
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash
-  }
-  return Math.abs(hash).toString(16).padStart(8, '0').toUpperCase() + '-' + Date.now().toString(16).toUpperCase()
-}
-
 export default function PublicProposalPage() {
   const [proposal, setProposal] = useState<any>(null)
   const [items, setItems] = useState<any[]>([])
   const [tenant, setTenant] = useState<any>(null)
+  const [client, setClient] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [signerName, setSignerName] = useState('')
   const [signing, setSigning] = useState(false)
@@ -33,17 +24,29 @@ export default function PublicProposalPage() {
 
   useEffect(() => {
     async function load() {
-      const { data: p } = await supabase.from('proposals').select('*, clients(*)').eq('public_token', params.token).single()
-      if (!p) { setLoading(false); return }
-      setProposal(p)
-      if (p.status === 'signed') setSigned(true)
-      const { data: its } = await supabase.from('proposal_items').select('*').eq('proposal_id', p.id).order('sort_order')
-      setItems(its || [])
-      const { data: t } = await supabase.from('tenants').select('*').eq('id', p.tenant_id).single()
-      setTenant(t)
-      if (p.status === 'sent') {
-        await supabase.from('proposals').update({ status: 'viewed', viewed_at: new Date().toISOString() }).eq('id', p.id)
+      // ✅ FIX: Usa o RPC get_public_proposal (security definer) em vez de
+      // acessar proposals diretamente — RLS bloqueava usuários anônimos.
+      const { data, error } = await supabase.rpc('get_public_proposal', {
+        p_token: params.token as string,
+      })
+
+      if (error || !data) {
+        setLoading(false)
+        return
       }
+
+      setProposal(data.proposal)
+      setClient(data.client)
+      setTenant(data.tenant)
+      setItems(data.items || [])
+
+      if (data.proposal.status === 'signed') setSigned(true)
+
+      // Marca como visualizada via RPC público
+      if (data.proposal.status === 'sent') {
+        await supabase.rpc('mark_public_proposal_viewed', { p_token: params.token as string })
+      }
+
       setLoading(false)
     }
     load()
@@ -68,18 +71,37 @@ export default function PublicProposalPage() {
     try {
       const timestamp = new Date().toISOString()
       const hash = generateSignatureHash({ name: signerName, timestamp, proposalId: proposal.id })
-      const { error } = await supabase.from('proposals').update({
-        status: 'signed', signed_at: timestamp, signer_name: signerName,
-        signer_ip: 'web-client', signature_hash: hash,
-      }).eq('id', proposal.id)
+
+      // ✅ FIX: Usa o RPC sign_public_proposal (security definer) em vez de
+      // atualizar proposals diretamente — RLS bloqueava usuários anônimos.
+      const { error } = await supabase.rpc('sign_public_proposal', {
+        p_token: params.token as string,
+        p_signer_name: signerName,
+        p_signature_hash: hash,
+        p_signer_useragent: navigator.userAgent,
+      })
       if (error) throw error
       setSigned(true)
-    } catch { alert('Erro ao assinar. Tente novamente.') }
+      setProposal((p: any) => ({ ...p, status: 'signed', signer_name: signerName, signed_at: timestamp, signature_hash: hash }))
+    } catch (err: any) {
+      alert(err.message || 'Erro ao assinar. Tente novamente.')
+    }
     setSigning(false)
   }
 
-  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f7f4', fontFamily: font }}><p style={{ color: '#6b7280' }}>Carregando proposta...</p></div>
-  if (!proposal) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f7f4', flexDirection: 'column', gap: '1rem', padding: '2rem', textAlign: 'center', fontFamily: font }}><div style={{ fontSize: '3rem' }}>🔍</div><h1 style={{ fontSize: '1.75rem', fontWeight: 800 }}>Proposta não encontrada</h1><p style={{ color: '#6b7280' }}>Este link pode ter expirado ou ser inválido.</p></div>
+  if (loading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f7f4', fontFamily: font }}>
+      <p style={{ color: '#6b7280' }}>Carregando proposta...</p>
+    </div>
+  )
+
+  if (!proposal) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f7f4', flexDirection: 'column', gap: '1rem', padding: '2rem', textAlign: 'center', fontFamily: font }}>
+      <div style={{ fontSize: '3rem' }}>🔍</div>
+      <h1 style={{ fontSize: '1.75rem', fontWeight: 800 }}>Proposta não encontrada</h1>
+      <p style={{ color: '#6b7280' }}>Este link pode ter expirado ou ser inválido.</p>
+    </div>
+  )
 
   function ItemSection({ list, title, subtotal, icon }: { list: any[]; title: string; subtotal: number; icon: string }) {
     if (list.length === 0) return null
@@ -90,8 +112,8 @@ export default function PublicProposalPage() {
           <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{title}</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.08)', background: '#f9fafb' }}>
-          {['Descrição','Qtd','Valor unit.','Total'].map((h, i) => (
-            <div key={h} style={{ padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'right' : 'left', ...(i > 0 ? { borderLeft: '1px solid rgba(13,17,23,0.06)', paddingLeft: '0.75rem', paddingRight: i === 3 ? '1.25rem' : '0.75rem' } : {}) }}>
+          {['Descrição', 'Qtd', 'Valor unit.', 'Total'].map((h, i) => (
+            <div key={h} style={{ padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'right' : 'left', ...(i > 0 ? { borderLeft: '1px solid rgba(13,17,23,0.06)' } : {}) }}>
               {h}
             </div>
           ))}
@@ -111,6 +133,9 @@ export default function PublicProposalPage() {
       </div>
     )
   }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '')
+  const proposalLink = `${appUrl}/p/${proposal.public_token}`
 
   return (
     <>
@@ -154,14 +179,14 @@ export default function PublicProposalPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
                 <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Cliente</p>
-                <p style={{ fontWeight: 700, color: '#0d1117' }}>{proposal.clients?.name || 'Cliente'}</p>
-                {proposal.clients?.email && <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>{proposal.clients.email}</p>}
-                {proposal.clients?.phone && <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>{proposal.clients.phone}</p>}
+                <p style={{ fontWeight: 700, color: '#0d1117' }}>{client?.name || 'Cliente'}</p>
+                {client?.email && <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>{client.email}</p>}
+                {client?.phone && <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>{client.phone}</p>}
               </div>
               {proposal.valid_until && (
                 <div style={{ textAlign: 'right' }}>
                   <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Válida até</p>
-                  <p style={{ fontWeight: 700, color: '#0d1117' }}>{new Date(proposal.valid_until).toLocaleDateString('pt-BR')}</p>
+                  <p style={{ fontWeight: 700, color: '#0d1117' }}>{new Date(proposal.valid_until + 'T12:00:00').toLocaleDateString('pt-BR')}</p>
                 </div>
               )}
             </div>

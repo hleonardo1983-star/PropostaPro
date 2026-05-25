@@ -7,8 +7,15 @@ export function generateWhatsAppLink(phone: string, message: string): string {
   return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`
 }
 
-export function generateSignatureHash(data: { name: string; ip: string; timestamp: string; proposalId: string }): string {
-  const str = `${data.name}|${data.ip}|${data.timestamp}|${data.proposalId}`
+// ✅ FIX: ip agora é opcional — a página pública não tem acesso ao IP real
+// (o IP capturado era "web-client", um placeholder sem valor)
+export function generateSignatureHash(data: {
+  name: string
+  timestamp: string
+  proposalId: string
+  ip?: string
+}): string {
+  const str = `${data.name}|${data.ip ?? 'web'}|${data.timestamp}|${data.proposalId}`
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i)
