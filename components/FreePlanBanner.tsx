@@ -4,9 +4,17 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 
+type Status = "ok" | "warning" | "critical" | "expired";
+
+interface BannerData {
+  daysLeft: number;
+  expiryDate: string;
+  status: Status;
+}
+
 export function FreePlanBanner() {
   const router = useRouter();
-  const [data, setData] = useState<{ daysLeft: number; expiryDate: string } | null>(null);
+  const [banner, setBanner] = useState<BannerData | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -19,7 +27,6 @@ export function FreePlanBanner() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Busca o tenant pelo profile do usuário
       const { data: profile } = await supabase
         .from("profiles")
         .select("tenant_id")
@@ -34,10 +41,8 @@ export function FreePlanBanner() {
         .eq("id", profile.tenant_id)
         .single();
 
-      // Só exibe para plano starter (free)
       if (!tenant || tenant.plan !== "starter") return;
 
-      // Usa plan_expires_at se existir, senão created_at + 14 dias
       const expiresAt = tenant.plan_expires_at
         ? new Date(tenant.plan_expires_at)
         : (() => {
@@ -47,64 +52,74 @@ export function FreePlanBanner() {
           })();
 
       const daysLeft = Math.max(0, Math.ceil((expiresAt.getTime() - Date.now()) / 86400000));
+      const status: Status =
+        daysLeft === 0 ? "expired" :
+        daysLeft <= 2  ? "critical" :
+        daysLeft <= 5  ? "warning"  : "ok";
 
-      setData({
+      setBanner({
         daysLeft,
+        status,
         expiryDate: expiresAt.toLocaleDateString("pt-BR", { day: "2-digit", month: "long" }),
       });
     }
     load();
   }, []);
 
-  if (!data || dismissed) return null;
+  if (!banner || dismissed) return null;
 
-  const { daysLeft, expiryDate } = data;
-  const isExpired  = daysLeft === 0;
-  const isCritical = daysLeft <= 2;
-  const isWarning  = daysLeft <= 5;
+  const { daysLeft, expiryDate, status } = banner;
 
-  const wrap = isExpired  ? "bg-gray-100 border-gray-300 text-gray-800"
-             : isCritical ? "bg-red-50 border-red-300 text-red-900"
-             : isWarning  ? "bg-amber-50 border-amber-300 text-amber-900"
-             :              "bg-blue-50 border-blue-200 text-blue-900";
+  const styles = {
+    ok:       { bar: "bg-indigo-600", bg: "bg-indigo-600", progress: "bg-white/40", text: "text-white", btn: "bg-white text-indigo-700 hover:bg-indigo-50" },
+    warning:  { bar: "bg-amber-500",  bg: "bg-amber-500",  progress: "bg-white/40", text: "text-white", btn: "bg-white text-amber-700 hover:bg-amber-50" },
+    critical: { bar: "bg-red-600",    bg: "bg-red-600",    progress: "bg-white/40", text: "text-white", btn: "bg-white text-red-700 hover:bg-red-50" },
+    expired:  { bar: "bg-gray-700",   bg: "bg-gray-700",   progress: "bg-white/20", text: "text-white", btn: "bg-white text-gray-800 hover:bg-gray-100" },
+  }[status];
 
-  const btn  = isExpired || isCritical ? "bg-red-600 hover:bg-red-700 text-white"
-             : isWarning               ? "bg-amber-500 hover:bg-amber-600 text-white"
-             :                           "bg-blue-600 hover:bg-blue-700 text-white";
+  const icon    = { ok: "⏳", warning: "⚠️", critical: "🔴", expired: "🔒" }[status];
+  const message =
+    status === "expired" ? "Seu período gratuito expirou. Faça upgrade para continuar." :
+    daysLeft === 1       ? `Plano free termina amanhã (${expiryDate}). Não perca o acesso!` :
+                           `Plano free ativo — expira em ${daysLeft} dias (${expiryDate}).`;
 
-  const icon = isExpired ? "🔒" : isCritical ? "🔴" : isWarning ? "⚠️" : "⏳";
-
-  const message = isExpired
-    ? "Seu período gratuito expirou. Faça upgrade para continuar usando."
-    : daysLeft === 1
-    ? `Seu plano free termina amanhã (${expiryDate}). Não perca o acesso!`
-    : `Seu plano free termina em ${daysLeft} dias — ${expiryDate}.`;
+  const consumed = Math.min(100, ((14 - daysLeft) / 14) * 100);
 
   return (
-    <div className={`w-full border-b ${wrap}`}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
-        <p className="flex-1 truncate text-sm font-medium">
-          {icon} {message}
-        </p>
-        <div className="flex shrink-0 items-center gap-2">
+    <div className={`w-full ${styles.bg}`}>
+      <div className={`mx-auto flex max-w-7xl items-center gap-3 px-4 py-2 ${styles.text}`}>
+        {/* ícone */}
+        <span className="shrink-0 text-sm">{icon}</span>
+
+        {/* mensagem */}
+        <p className="flex-1 text-sm font-medium">{message}</p>
+
+        {/* botão */}
+        <button
+          onClick={() => router.push("/planos")}
+          className={`shrink-0 rounded-full px-4 py-1 text-xs font-bold shadow transition ${styles.btn}`}
+        >
+          Ver planos →
+        </button>
+
+        {/* fechar */}
+        {status !== "expired" && (
           <button
-            onClick={() => router.push("/planos")}
-            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${btn}`}
+            onClick={() => setDismissed(true)}
+            aria-label="Fechar"
+            className="shrink-0 opacity-60 hover:opacity-100 transition text-white text-sm ml-1"
           >
-            Ver planos
+            ✕
           </button>
-          {!isExpired && (
-            <button onClick={() => setDismissed(true)} aria-label="Fechar" className="rounded p-1 opacity-40 hover:opacity-100 transition">
-              ✕
-            </button>
-          )}
-        </div>
+        )}
       </div>
-      {!isExpired && (
-        <div className="h-0.5 w-full bg-black/10">
+
+      {/* barra de progresso */}
+      {status !== "expired" && (
+        <div className={`h-0.5 w-full ${styles.progress}`}>
           <div
-            className={`h-0.5 transition-all ${isCritical ? "bg-red-500" : isWarning ? "bg-amber-500" : "bg-blue-500"}`}
-            style={{ width: `${Math.min(100, ((14 - daysLeft) / 14) * 100)}%` }}
+            className="h-0.5 bg-white/80 transition-all duration-700"
+            style={{ width: `${consumed}%` }}
           />
         </div>
       )}
