@@ -27,7 +27,7 @@ export default function LandingPage() {
             <Link href="/login" style={{ background: 'white', color: '#111827', padding: '0.9rem 2rem', borderRadius: '100px', textDecoration: 'none', fontWeight: 500, fontSize: '1rem', border: '1.5px solid rgba(17,24,39,0.12)' }}>Já tenho conta →</Link>
           </div>
           <div style={{ marginTop: '2rem', display: 'flex', gap: '2rem', justifyContent: 'center', fontSize: '0.82rem', color: '#9ca3af', flexWrap: 'wrap' }}>
-            <span>✓ Sem cartão de crédito</span><span>✓ 5 propostas grátis</span><span>✓ Cancele quando quiser</span>
+            <span>✓ Sem cartão de crédito</span><span>✓ 14 dias de teste grátis</span><span>✓ Cancele quando quiser</span>
           </div>
         </div>
       </section>
@@ -84,7 +84,7 @@ export default function LandingPage() {
           <p style={{ color: 'rgba(255,255,255,0.4)', marginBottom: '3rem', fontSize: '0.95rem' }}>Sem taxas por proposta assinada. Pague apenas a assinatura.</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: '1.5rem' }}>
             {[
-              { name: 'Free', price: '0', period: 'para sempre', desc: '14 dias grátis com tudo liberado', features: ['5 propostas/mês', '1 usuário', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail'], missing: ['Relatórios', 'Multi-usuário'], featured: false, cta: 'Criar conta grátis' },
+              { name: 'Trial', price: '0', period: '14 dias', desc: 'Período de testes de 14 dias', features: ['Propostas ilimitadas (14d)', '1 usuário', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail'], missing: ['Relatórios', 'Multi-usuário'], featured: false, cta: 'Criar conta grátis' },
               { name: 'Starter', price: '49', period: '/mês', desc: 'Para freelancers e autônomos', features: ['10 propostas/mês', '1 usuário master', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail', '1 relatório/mês'], missing: ['Multi-usuário'], featured: false, cta: 'Começar' },
               { name: 'Profissional', price: '99', period: '/mês', desc: 'Para pequenas empresas', features: ['30 propostas/mês', '3 usuários', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail', '3 relatórios/mês', 'Gestão de usuários'], missing: [], featured: true, cta: 'Começar' },
               { name: 'Business', price: '199', period: '/mês', desc: 'Para equipes e empresas', features: ['Propostas ilimitadas', 'Usuários ilimitados', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail', 'Relatórios ilimitados', 'Gestão de usuários', 'Suporte prioritário'], missing: [], featured: false, cta: 'Falar com vendas' },
@@ -95,7 +95,7 @@ export default function LandingPage() {
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.25rem' }}>
                   {p.price !== '0' && <span style={{ fontSize: '0.9rem', opacity: 0.6 }}>R$</span>}
                   <span style={{ fontFamily: font, fontSize: '2.5rem', letterSpacing: '-0.03em', lineHeight: 1, fontWeight: 800 }}>{p.price === '0' ? 'Grátis' : p.price}</span>
-                  <span style={{ fontSize: '0.85rem', opacity: 0.5 }}>{p.period}</span>
+                  <span style={{ fontSize: '0.85rem', opacity: 0.55 }}>{p.period}</span>
                 </div>
                 <p style={{ fontSize: '0.82rem', opacity: 0.55, marginBottom: '1.5rem', lineHeight: 1.5 }}>{p.desc}</p>
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.75rem', padding: 0 }}>
@@ -111,7 +111,7 @@ export default function LandingPage() {
 
       <section style={{ padding: '7rem 5vw', textAlign: 'center', background: '#f8f7f4' }}>
         <h2 style={{ fontFamily: font, fontSize: 'clamp(2rem,4vw,3rem)', letterSpacing: '-0.03em', fontWeight: 700, marginBottom: '1rem', color: '#111827' }}>Sua primeira proposta em 5 minutos</h2>
-        <p style={{ color: '#6b7280', marginBottom: '2.5rem', fontSize: '1rem' }}>5 propostas grátis. Sem cartão de crédito. Cancele quando quiser.</p>
+        <p style={{ color: '#6b7280', marginBottom: '2.5rem', fontSize: '1rem' }}>Período de testes de 14 dias com tudo liberado. Sem cartão de crédito.</p>
         <Link href="/register" style={{ background: '#2563eb', color: 'white', padding: '1rem 2.5rem', borderRadius: '100px', textDecoration: 'none', fontWeight: 700, fontSize: '1.05rem', boxShadow: '0 4px 20px rgba(37,99,235,0.3)' }}>Criar conta grátis →</Link>
       </section>
 
