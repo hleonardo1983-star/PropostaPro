@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<React.ReactNode>('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
@@ -18,8 +18,48 @@ export default function LoginPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true); setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) { setError('E-mail ou senha incorretos.'); setLoading(false); return }
+    
+    let emailExists = true
+    try {
+      // Tenta verificar se o e-mail está cadastrado usando uma RPC segura
+      const { data, error: rpcError } = await supabase.rpc('check_email_exists', { p_email: email })
+      if (!rpcError && data !== null) {
+        emailExists = !!data
+      }
+    } catch (err) {
+      console.warn('RPC check_email_exists não disponível:', err)
+    }
+
+    if (!emailExists) {
+      setError(
+        <span>
+          Este e-mail não está cadastrado.{' '}
+          <Link href="/register" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'underline' }}>
+            Clique aqui para criar sua conta grátis
+          </Link>.
+        </span>
+      )
+      setLoading(false)
+      return
+    }
+
+    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password })
+    if (loginError) {
+      if (emailExists) {
+        setError('Senha incorreta. Por favor, tente novamente.')
+      } else {
+        setError(
+          <span>
+            E-mail não cadastrado ou senha incorreta. Não tem uma conta?{' '}
+            <Link href="/register" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'underline' }}>
+              Crie sua conta grátis aqui
+            </Link>.
+          </span>
+        )
+      }
+      setLoading(false)
+      return
+    }
     router.push('/dashboard')
   }
 
