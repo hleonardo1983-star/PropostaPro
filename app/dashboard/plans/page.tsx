@@ -37,8 +37,8 @@ export default function PlansPage() {
 
   const plans = [
     { id: 'free', name: 'Trial', price: 0, period: '14 dias', desc: 'Período de testes de 14 dias', limit: 999999,
-      features: ['Propostas ilimitadas (14d)', '1 usuário', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail'],
-      missing: ['Relatórios', 'Multi-usuário'], color: '#6b7280', featured: false },
+      features: ['Propostas ilimitadas (14d)', '1 usuário', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail', 'Relatórios'],
+      missing: [], color: '#6b7280', featured: false },
     { id: 'starter', name: 'Starter', price: 49, period: '/mês', desc: 'Para freelancers e autônomos', limit: 10,
       features: ['10 propostas/mês', '1 usuário master', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail', '1 relatório/mês'],
       missing: ['Multi-usuário'], color: '#1d4ed8', featured: false },
