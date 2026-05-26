@@ -3,7 +3,40 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useParams, useRouter } from 'next/navigation'
 import { formatCurrency, generateWhatsAppLink } from '@/lib/utils'
+import { checkTrialExpired } from '@/lib/trial'
 import Link from 'next/link'
+
+const colHead: React.CSSProperties = { padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase' as const, letterSpacing: '0.06em' }
+const colCell: React.CSSProperties = { padding: '0.6rem 1.25rem', fontSize: '0.875rem' }
+
+function SectionTable({ list, title, icon, subtotal }: { list: any[]; title: string; icon: string; subtotal: number }) {
+  if (list.length === 0) return null
+  return (
+    <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', marginBottom: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+      <div style={{ background: '#0d1117', padding: '0.85rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span>{icon}</span>
+          <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{title}</span>
+        </div>
+        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#2563eb' }}>{formatCurrency(subtotal)}</span>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.08)', background: '#f9fafb' }}>
+        <div style={colHead}>Descrição</div>
+        <div style={{ ...colHead, textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Qtd</div>
+        <div style={{ ...colHead, textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Valor unit.</div>
+        <div style={{ ...colHead, textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Total</div>
+      </div>
+      {list.map((item: any, idx: number) => (
+        <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
+          <div style={{ ...colCell, fontWeight: 500, color: '#0d1117' }}>{item.description}</div>
+          <div style={{ ...colCell, textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{item.quantity}</div>
+          <div style={{ ...colCell, textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.unit_price)}</div>
+          <div style={{ ...colCell, textAlign: 'right', fontWeight: 700, color: '#0d1117', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function ProposalDetailPage() {
   const [proposal, setProposal] = useState<any>(null)
@@ -13,6 +46,7 @@ export default function ProposalDetailPage() {
   const [clientPhone, setClientPhone] = useState('')
   const [clientEmail, setClientEmail] = useState('')
   const [showSendModal, setShowSendModal] = useState(false)
+  const [trialExpired, setTrialExpired] = useState(false)
   const params = useParams()
   const router = useRouter()
   const supabase = createClient()
@@ -25,9 +59,12 @@ export default function ProposalDetailPage() {
     setClientEmail((p.clients as any)?.email || '')
     const { data: its } = await supabase.from('proposal_items').select('*').eq('proposal_id', params.id).order('sort_order')
     setItems(its || [])
+    const expired = await checkTrialExpired()
+    setTrialExpired(expired)
     setLoading(false)
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load() }, [params.id])
 
   const total = items.reduce((s, i) => s + Number(i.quantity) * Number(i.unit_price), 0)
@@ -80,37 +117,6 @@ export default function ProposalDetailPage() {
 
   const s = statusLabel[proposal.status] || statusLabel.draft
   const font = "'Plus Jakarta Sans', system-ui, sans-serif"
-  const colHead: React.CSSProperties = { padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase' as const, letterSpacing: '0.06em' }
-  const colCell: React.CSSProperties = { padding: '0.6rem 1.25rem', fontSize: '0.875rem' }
-
-  function SectionTable({ list, title, icon, subtotal }: { list: any[]; title: string; icon: string; subtotal: number }) {
-    if (list.length === 0) return null
-    return (
-      <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', marginBottom: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-        <div style={{ background: '#0d1117', padding: '0.85rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span>{icon}</span>
-            <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{title}</span>
-          </div>
-          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#2563eb' }}>{formatCurrency(subtotal)}</span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.08)', background: '#f9fafb' }}>
-          <div style={colHead}>Descrição</div>
-          <div style={{ ...colHead, textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Qtd</div>
-          <div style={{ ...colHead, textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Valor unit.</div>
-          <div style={{ ...colHead, textAlign: 'right', borderLeft: '1px solid rgba(13,17,23,0.06)' }}>Total</div>
-        </div>
-        {list.map((item: any, idx: number) => (
-          <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
-            <div style={{ ...colCell, fontWeight: 500, color: '#0d1117' }}>{item.description}</div>
-            <div style={{ ...colCell, textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{item.quantity}</div>
-            <div style={{ ...colCell, textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.unit_price)}</div>
-            <div style={{ ...colCell, textAlign: 'right', fontWeight: 700, color: '#0d1117', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
-          </div>
-        ))}
-      </div>
-    )
-  }
 
   const services = items.filter(i => (i.item_type || 'service') === 'service')
   const products = items.filter(i => i.item_type === 'product')
@@ -156,7 +162,7 @@ export default function ProposalDetailPage() {
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           {proposal.status !== 'signed' && (
-            <button onClick={() => setShowSendModal(true)} style={{ background: '#2563eb', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.875rem', fontFamily: font }}>📤 Enviar</button>
+            <button onClick={() => setShowSendModal(true)} disabled={trialExpired} style={{ background: '#2563eb', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', cursor: trialExpired ? 'not-allowed' : 'pointer', fontWeight: 700, fontSize: '0.875rem', fontFamily: font, opacity: trialExpired ? 0.5 : 1 }}>📤 Enviar</button>
           )}
           <a href={proposalLink} target="_blank" rel="noreferrer" style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', color: '#0d1117', padding: '0.65rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontWeight: 500, fontSize: '0.875rem' }}>👁 Visualizar</a>
         </div>

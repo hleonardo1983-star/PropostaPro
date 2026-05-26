@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { checkTrialExpired } from '@/lib/trial'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -90,8 +91,7 @@ function ItemBlock({ type, icon, label, list, subtotal, onAdd, onRemove, onUpdat
 export default function NewProposalPage() {
   const [title, setTitle] = useState('')
   const [notes, setNotes] = useState('')
-  const defaultValidUntil = new Date(Date.now() + 10 * 86400000).toISOString().split('T')[0]
-  const [validUntil, setValidUntil] = useState(defaultValidUntil)
+  const [validUntil, setValidUntil] = useState('')
   const [clientId, setClientId] = useState('')
   const [clients, setClients] = useState<any[]>([])
   const [items, setItems] = useState<Item[]>([
@@ -106,6 +106,7 @@ export default function NewProposalPage() {
   const supabase = createClient()
 
   useEffect(() => {
+    setValidUntil(new Date(Date.now() + 10 * 86400000).toISOString().split('T')[0])
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
@@ -119,6 +120,13 @@ export default function NewProposalPage() {
       setProposalCount((count || 0) + 1)
     }
     load()
+    checkTrialExpired().then(expired => {
+      if (expired) {
+        alert('Seu período de teste expirou. Assine um plano para criar novas propostas.')
+        router.push('/dashboard/proposals')
+      }
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const addItem = useCallback((type: 'service' | 'product') => {

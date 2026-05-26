@@ -36,6 +36,7 @@ export default function DashboardPage() {
       setLoading(false)
     }
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const statusLabel: Record<string, { label: string; color: string; bg: string }> = {

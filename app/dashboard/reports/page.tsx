@@ -31,6 +31,7 @@ export default function ReportsPage() {
       setLoading(false)
     }
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period])
 
   const totalReceived = receivables.filter(r => r.status === 'paid').reduce((s, r) => s + Number(r.amount), 0)

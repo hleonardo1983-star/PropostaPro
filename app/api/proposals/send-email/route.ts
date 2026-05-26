@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { proposalId, email, link, title } = await request.json()
     if (!email || !link) return NextResponse.json({ error: 'Dados incompletos' }, { status: 400 })
 

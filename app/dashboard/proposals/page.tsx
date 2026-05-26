@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { checkTrialExpired } from '@/lib/trial'
 import Link from 'next/link'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
@@ -14,6 +15,7 @@ export default function ProposalsPage() {
   const [loading, setLoading] = useState(true)
   const [confirmId, setConfirmId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [trialExpired, setTrialExpired] = useState(false)
   const supabase = createClient()
 
   const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
@@ -34,9 +36,12 @@ export default function ProposalsPage() {
       .eq('tenant_id', profile.tenant_id)
       .order('created_at', { ascending: false })
     setProposals(data || [])
+    const expired = await checkTrialExpired()
+    setTrialExpired(expired)
     setLoading(false)
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load() }, [])
 
   async function handleDelete(id: string) {
@@ -74,9 +79,13 @@ export default function ProposalsPage() {
           <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Propostas</h1>
           <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>{proposals.length} proposta{proposals.length !== 1 ? 's' : ''} no total</p>
         </div>
-        <Link href="/dashboard/proposals/new" style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
-          + Nova proposta
-        </Link>
+        {trialExpired ? (
+          <span style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, fontSize: '0.9rem', fontWeight: 700, opacity: 0.5, cursor: 'not-allowed', display: 'inline-block' }}>+ Nova proposta</span>
+        ) : (
+          <Link href="/dashboard/proposals/new" style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
+            + Nova proposta
+          </Link>
+        )}
       </div>
 
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
@@ -115,7 +124,7 @@ export default function ProposalsPage() {
                     <td style={{ padding: '1rem 1.25rem' }}>
                       <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                         <Link href={`/dashboard/proposals/${p.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700 }}>Ver →</Link>
-                        <button onClick={() => setConfirmId(p.id)} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font }}
+                        <button onClick={() => setConfirmId(p.id)} disabled={trialExpired} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font, opacity: trialExpired ? 0.5 : 1 }}
                           onMouseEnter={e => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.borderColor = '#dc2626' }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'rgba(13,17,23,0.12)' }}>
                           Excluir

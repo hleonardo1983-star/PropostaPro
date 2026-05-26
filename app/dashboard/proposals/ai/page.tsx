@@ -55,6 +55,7 @@ export default function AIProposalPage() {
       setProposalCount((count || 0) + 1)
     }
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function generateProposal() {

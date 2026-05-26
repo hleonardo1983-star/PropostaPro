@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { checkTrialExpired } from '@/lib/trial'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -16,6 +17,7 @@ export default function SettingsPage() {
   const [msgProfile, setMsgProfile] = useState('')
   const [msgCompany, setMsgCompany] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [trialExpired, setTrialExpired] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
@@ -30,8 +32,11 @@ export default function SettingsPage() {
         setCompany({ name: (data.tenants as any)?.name || '', primary_color: (data.tenants as any)?.primary_color || '#2563eb', logo_url: (data.tenants as any)?.logo_url || '' })
       }
       setLoading(false)
+      const expired = await checkTrialExpired()
+      setTrialExpired(expired)
     }
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function uploadLogo(file: File) {
@@ -94,7 +99,7 @@ export default function SettingsPage() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {msgProfile && <span style={{ fontSize: '0.85rem', color: msgProfile.includes('Erro') ? '#dc2626' : '#059669', fontWeight: 600 }}>{msgProfile.includes('Erro') ? '✕ ' : '✓ '}{msgProfile}</span>}
-            <button type="submit" disabled={savingProfile} style={{ marginLeft: 'auto', background: '#0d1117', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', fontFamily: font, opacity: savingProfile ? 0.7 : 1 }}>
+            <button type="submit" disabled={savingProfile || trialExpired} style={{ marginLeft: 'auto', background: '#0d1117', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: trialExpired ? 'not-allowed' : 'pointer', fontFamily: font, opacity: (savingProfile || trialExpired) ? 0.5 : 1 }}>
               {savingProfile ? 'Salvando...' : 'Salvar dados'}
             </button>
           </div>
@@ -109,6 +114,7 @@ export default function SettingsPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
               {company.logo_url ? (
                 <div style={{ position: 'relative' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={company.logo_url} alt="Logo" style={{ width: 80, height: 80, objectFit: 'contain', borderRadius: 12, border: '1.5px solid rgba(13,17,23,0.1)', background: '#f9fafb', padding: 8 }} />
                   <button type="button" onClick={removeLogo} style={{ position: 'absolute', top: -8, right: -8, width: 22, height: 22, background: '#dc2626', color: 'white', border: 'none', borderRadius: '50%', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                 </div>
@@ -117,7 +123,7 @@ export default function SettingsPage() {
               )}
               <div>
                 <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { if (e.target.files?.[0]) uploadLogo(e.target.files[0]) }} />
-                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadingLogo} style={{ background: '#0d1117', color: 'white', border: 'none', padding: '0.6rem 1.25rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, fontFamily: font, opacity: uploadingLogo ? 0.7 : 1, display: 'block', marginBottom: '0.4rem' }}>
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadingLogo || trialExpired} style={{ background: '#0d1117', color: 'white', border: 'none', padding: '0.6rem 1.25rem', borderRadius: 100, cursor: (uploadingLogo || trialExpired) ? 'not-allowed' : 'pointer', fontSize: '0.85rem', fontWeight: 700, fontFamily: font, opacity: (uploadingLogo || trialExpired) ? 0.5 : 1, display: 'block', marginBottom: '0.4rem' }}>
                   {uploadingLogo ? 'Enviando...' : company.logo_url ? 'Trocar logo' : 'Fazer upload'}
                 </button>
                 <p style={{ fontSize: '0.75rem', color: '#9ca3af' }}>PNG, JPG ou SVG. Máx 2MB.</p>
@@ -143,7 +149,7 @@ export default function SettingsPage() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {msgCompany && <span style={{ fontSize: '0.85rem', color: msgCompany.includes('Erro') ? '#dc2626' : '#059669', fontWeight: 600 }}>{msgCompany.includes('Erro') ? '✕ ' : '✓ '}{msgCompany}</span>}
-            <button type="submit" disabled={savingCompany} style={{ marginLeft: 'auto', background: '#0d1117', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', fontFamily: font, opacity: savingCompany ? 0.7 : 1 }}>
+            <button type="submit" disabled={savingCompany || trialExpired} style={{ marginLeft: 'auto', background: '#0d1117', color: 'white', padding: '0.65rem 1.5rem', borderRadius: 100, border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: trialExpired ? 'not-allowed' : 'pointer', fontFamily: font, opacity: (savingCompany || trialExpired) ? 0.5 : 1 }}>
               {savingCompany ? 'Salvando...' : 'Salvar empresa'}
             </button>
           </div>

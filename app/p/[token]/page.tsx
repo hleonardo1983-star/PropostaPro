@@ -10,6 +10,37 @@ function formatCurrency(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
+function ItemSection({ list, title, subtotal, icon, accent }: { list: any[]; title: string; subtotal: number; icon: string; accent: string }) {
+  if (list.length === 0) return null
+  return (
+    <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', marginBottom: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+      <div style={{ background: '#0d1117', padding: '0.85rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <span>{icon}</span>
+        <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{title}</span>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.08)', background: '#f9fafb' }}>
+        {['Descrição', 'Qtd', 'Valor unit.', 'Total'].map((h, i) => (
+          <div key={h} style={{ padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'right' : 'left', ...(i > 0 ? { borderLeft: '1px solid rgba(13,17,23,0.06)' } : {}) }}>
+            {h}
+          </div>
+        ))}
+      </div>
+      {list.map((item, idx) => (
+        <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
+          <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.9rem', color: '#0d1117', fontWeight: 500 }}>{item.description}</div>
+          <div style={{ padding: '0.6rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{item.quantity}</div>
+          <div style={{ padding: '0.6rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.unit_price)}</div>
+          <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 700, color: '#0d1117', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
+        </div>
+      ))}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1.5rem', padding: '0.6rem 1.25rem', background: '#f9fafb', borderTop: '2px solid rgba(13,17,23,0.08)' }}>
+        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6b7280' }}>Subtotal {title}</span>
+        <span style={{ fontSize: '1rem', fontWeight: 800, color: accent, minWidth: 120, textAlign: 'right' }}>{formatCurrency(subtotal)}</span>
+      </div>
+    </div>
+  )
+}
+
 export default function PublicProposalPage() {
   const [proposal, setProposal] = useState<any>(null)
   const [items, setItems] = useState<any[]>([])
@@ -50,6 +81,7 @@ export default function PublicProposalPage() {
       setLoading(false)
     }
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.token])
 
   const services = items.filter(i => (i.item_type || 'service') === 'service')
@@ -103,39 +135,8 @@ export default function PublicProposalPage() {
     </div>
   )
 
-  function ItemSection({ list, title, subtotal, icon }: { list: any[]; title: string; subtotal: number; icon: string }) {
-    if (list.length === 0) return null
-    return (
-      <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', marginBottom: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-        <div style={{ background: '#0d1117', padding: '0.85rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span>{icon}</span>
-          <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{title}</span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.08)', background: '#f9fafb' }}>
-          {['Descrição', 'Qtd', 'Valor unit.', 'Total'].map((h, i) => (
-            <div key={h} style={{ padding: '0.5rem 1.25rem', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'right' : 'left', ...(i > 0 ? { borderLeft: '1px solid rgba(13,17,23,0.06)' } : {}) }}>
-              {h}
-            </div>
-          ))}
-        </div>
-        {list.map((item, idx) => (
-          <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 130px 130px', borderBottom: '1px solid rgba(13,17,23,0.04)', background: idx % 2 === 0 ? 'white' : '#fafafa' }}>
-            <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.9rem', color: '#0d1117', fontWeight: 500 }}>{item.description}</div>
-            <div style={{ padding: '0.6rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{item.quantity}</div>
-            <div style={{ padding: '0.6rem 0.75rem', fontSize: '0.875rem', textAlign: 'right', color: '#6b7280', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.unit_price)}</div>
-            <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 700, color: '#0d1117', borderLeft: '1px solid rgba(13,17,23,0.04)' }}>{formatCurrency(item.quantity * item.unit_price)}</div>
-          </div>
-        ))}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1.5rem', padding: '0.6rem 1.25rem', background: '#f9fafb', borderTop: '2px solid rgba(13,17,23,0.08)' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6b7280' }}>Subtotal {title}</span>
-          <span style={{ fontSize: '1rem', fontWeight: 800, color: accent, minWidth: 120, textAlign: 'right' }}>{formatCurrency(subtotal)}</span>
-        </div>
-      </div>
-    )
-  }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '')
-  const proposalLink = `${appUrl}/p/${proposal.public_token}`
+
 
   return (
     <>
@@ -151,6 +152,7 @@ export default function PublicProposalPage() {
       <div style={{ minHeight: '100vh', background: '#f8f7f4', fontFamily: font }}>
         <div className="no-print" style={{ background: 'white', borderBottom: '1px solid rgba(17,24,39,0.08)', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             {tenant?.logo_url && <img src={tenant.logo_url} alt="Logo" style={{ height: 36, objectFit: 'contain' }} />}
             <span style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em' }}>{tenant?.name || 'PropostaPro'}</span>
           </div>
@@ -164,6 +166,7 @@ export default function PublicProposalPage() {
           <div style={{ background: 'white', borderRadius: 16, padding: '2rem', marginBottom: '1.5rem', border: '1px solid rgba(13,17,23,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: `3px solid ${accent}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 {tenant?.logo_url && <img src={tenant.logo_url} alt="Logo" style={{ height: 56, objectFit: 'contain', maxWidth: 140 }} />}
                 <div>
                   <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#0d1117', marginBottom: '0.15rem' }}>{tenant?.name}</h1>
@@ -192,8 +195,8 @@ export default function PublicProposalPage() {
             </div>
           </div>
 
-          <ItemSection list={services} title="Serviços" subtotal={totalServices} icon="🛠️" />
-          <ItemSection list={products} title="Produtos" subtotal={totalProducts} icon="📦" />
+          <ItemSection list={services} title="Serviços" subtotal={totalServices} icon="🛠️" accent={accent} />
+          <ItemSection list={products} title="Produtos" subtotal={totalProducts} icon="📦" accent={accent} />
 
           {(services.length > 0 || products.length > 0) && (
             <div style={{ background: '#0d1117', borderRadius: 16, padding: '1.25rem 1.5rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

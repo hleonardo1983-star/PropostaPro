@@ -32,11 +32,12 @@ export default function PlansPage() {
       setLoading(false)
     }
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const plans = [
-    { id: 'free', name: 'Free', price: 0, period: 'para sempre', desc: '14 dias grátis com tudo liberado', limit: 5,
-      features: ['5 propostas/mês', '1 usuário', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail'],
+    { id: 'free', name: 'Trial', price: 0, period: '14 dias', desc: 'Período de testes de 14 dias', limit: 999999,
+      features: ['Propostas ilimitadas (14d)', '1 usuário', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail'],
       missing: ['Relatórios', 'Multi-usuário'], color: '#6b7280', featured: false },
     { id: 'starter', name: 'Starter', price: 49, period: '/mês', desc: 'Para freelancers e autônomos', limit: 10,
       features: ['10 propostas/mês', '1 usuário master', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail', '1 relatório/mês'],

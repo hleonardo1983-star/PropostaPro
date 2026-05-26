@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { checkTrialExpired } from '@/lib/trial'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -14,6 +15,7 @@ export default function ReceivablesPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({ status: '', due_date: '' })
   const [saving, setSaving] = useState(false)
+  const [trialExpired, setTrialExpired] = useState(false)
   const supabase = createClient()
 
   async function load() {
@@ -26,9 +28,12 @@ export default function ReceivablesPage() {
       .eq('tenant_id', profile.tenant_id)
       .order('due_date', { ascending: true, nullsFirst: false })
     setReceivables(data || [])
+    const expired = await checkTrialExpired()
+    setTrialExpired(expired)
     setLoading(false)
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load() }, [])
 
   async function markPaid(id: string) {
@@ -150,9 +155,9 @@ export default function ReceivablesPage() {
                     <td style={{ padding: '1rem 1.25rem' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                         {r.status === 'pending' && (
-                          <button onClick={() => markPaid(r.id)} style={{ background: 'rgba(5,150,105,0.1)', color: '#065f46', border: 'none', padding: '0.35rem 0.8rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, fontFamily: font, whiteSpace: 'nowrap' }}>Marcar pago</button>
+                          <button onClick={() => markPaid(r.id)} disabled={trialExpired} style={{ background: 'rgba(5,150,105,0.1)', color: '#065f46', border: 'none', padding: '0.35rem 0.8rem', borderRadius: 100, cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.78rem', fontWeight: 700, fontFamily: font, whiteSpace: 'nowrap', opacity: trialExpired ? 0.5 : 1 }}>Marcar pago</button>
                         )}
-                        <button onClick={() => openEdit(r)} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.15)', color: '#6b7280', padding: '0.35rem 0.8rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font }}>Editar</button>
+                        <button onClick={() => openEdit(r)} disabled={trialExpired} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.15)', color: '#6b7280', padding: '0.35rem 0.8rem', borderRadius: 100, cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font, opacity: trialExpired ? 0.5 : 1 }}>Editar</button>
                       </div>
                     </td>
                   </tr>

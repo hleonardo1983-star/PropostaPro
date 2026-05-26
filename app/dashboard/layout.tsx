@@ -39,8 +39,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
     const data = { userName: profile.full_name || '', companyName: (profile.tenants as any)?.name || '', plan: tenantPlan, isMaster: profile.is_master || false, trialDaysLeft, trialExpired }
     userDataCache = data; cacheTime = Date.now(); setUserData(data)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { loadUser() }, [])
 
   async function logout() {
@@ -61,7 +63,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const { userName, companyName, trialDaysLeft, plan, isMaster, trialExpired } = userData
   const isSettings = pathname === '/dashboard/settings'
-  const isPlansPage = pathname === '/dashboard/plans'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f7f4', fontFamily: font }}>
@@ -134,22 +135,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       <main style={{ flex: 1, marginLeft: 256, overflow: 'auto', padding: '2.5rem 3rem', minHeight: '100vh', position: 'relative' }}>
-        {/* Bloqueio de trial expirado — exceto na página de planos */}
-        {trialExpired && !isPlansPage && (
-          <div style={{ position: 'fixed', top: 0, left: 256, right: 0, bottom: 0, background: 'rgba(248,247,244,0.97)', backdropFilter: 'blur(8px)', zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-            <div style={{ background: 'white', borderRadius: 24, padding: '3rem', maxWidth: 480, width: '100%', textAlign: 'center', boxShadow: '0 24px 64px rgba(0,0,0,0.12)', border: '1px solid rgba(13,17,23,0.08)' }}>
-              <div style={{ width: 72, height: 72, background: 'rgba(37,99,235,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '2rem' }}>🔒</div>
-              <h2 style={{ fontFamily: font, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#0d1117', marginBottom: '0.75rem' }}>Seu período gratuito encerrou</h2>
-              <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '2rem' }}>
-                Os 14 dias de acesso completo chegaram ao fim. Escolha um plano para continuar criando propostas e usando o sistema.
-              </p>
-              <Link href="/dashboard/plans" style={{ display: 'block', background: '#2563eb', color: 'white', padding: '1rem 2rem', borderRadius: 100, textDecoration: 'none', fontWeight: 800, fontSize: '1rem', marginBottom: '0.75rem', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
-                Ver planos e assinar →
-              </Link>
-              <button onClick={logout} style={{ background: 'transparent', border: 'none', color: '#9ca3af', fontSize: '0.85rem', cursor: 'pointer', fontFamily: font }}>
-                Sair da conta
-              </button>
+        {trialExpired && (
+          <div style={{ background: 'linear-gradient(135deg, rgba(220,38,38,0.08), rgba(37,99,235,0.08))', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 12, padding: '1rem 1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ fontSize: '1.25rem' }}>🔒</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontWeight: 700, color: '#dc2626', fontSize: '0.9rem' }}>Período de teste encerrado</p>
+              <p style={{ color: '#6b7280', fontSize: '0.82rem' }}>Seus dados estão preservados, mas edições e novos cadastros estão bloqueados. Assine um plano para continuar.</p>
             </div>
+            <Link href="/dashboard/plans" style={{ background: '#2563eb', color: 'white', padding: '0.6rem 1.25rem', borderRadius: 100, textDecoration: 'none', fontWeight: 700, fontSize: '0.82rem', whiteSpace: 'nowrap' }}>Ver planos →</Link>
           </div>
         )}
         {children}
