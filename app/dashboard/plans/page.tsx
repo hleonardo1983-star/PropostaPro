@@ -35,7 +35,7 @@ export default function PlansPage() {
   }, [])
 
   const plans = [
-    { id: 'free', name: 'Free', price: 0, period: 'para sempre', desc: 'Para conhecer a plataforma', limit: 5,
+    { id: 'free', name: 'Free', price: 0, period: 'para sempre', desc: '14 dias grátis com tudo liberado', limit: 5,
       features: ['5 propostas/mês', '1 usuário', 'Assinatura digital', 'Contas a receber', 'WhatsApp + E-mail'],
       missing: ['Relatórios', 'Multi-usuário'], color: '#6b7280', featured: false },
     { id: 'starter', name: 'Starter', price: 49, period: '/mês', desc: 'Para freelancers e autônomos', limit: 10,
