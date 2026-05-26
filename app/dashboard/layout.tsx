@@ -6,58 +6,45 @@ import { useEffect, useState, useCallback } from 'react'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
-// ✅ FIX: Cache removido — era uma variável global de módulo que persistia
-// entre sessões de usuários diferentes no mesmo processo (ex: SSR em prod,
-// ou usuário que fez logout e outro fez login sem recarregar a aba).
-// A abordagem correta é usar React state + Supabase realtime se necessário.
+let userDataCache: any = null
+let cacheTime = 0
+const CACHE_TTL = 30000
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
   const [userData, setUserData] = useState<{
-    userName: string
-    companyName: string
-    trialDaysLeft: number | null
-    plan: string
-    isMaster: boolean
-  }>({
-    userName: '', companyName: '', trialDaysLeft: null, plan: 'free', isMaster: false
-  })
+    userName: string; companyName: string; trialDaysLeft: number | null
+    plan: string; isMaster: boolean; trialExpired: boolean
+  }>({ userName: '', companyName: '', trialDaysLeft: null, plan: 'free', isMaster: false, trialExpired: false })
 
   const loadUser = useCallback(async () => {
+    if (userDataCache && Date.now() - cacheTime < CACHE_TTL) { setUserData(userDataCache); return }
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-
     const { data: profile } = await supabase
       .from('profiles')
       .select('full_name, is_master, tenants(name, plan, created_at)')
-      .eq('id', user.id)
-      .single()
-
+      .eq('id', user.id).single()
     if (!profile) return
-
     const tenantPlan = (profile.tenants as any)?.plan || 'free'
     let trialDaysLeft: number | null = null
-
+    let trialExpired = false
     if (!tenantPlan || tenantPlan === 'free') {
       const created = new Date((profile.tenants as any)?.created_at || user.created_at)
       const trialEnd = new Date(created.getTime() + 14 * 86400000)
       trialDaysLeft = Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86400000))
+      trialExpired = trialDaysLeft === 0
     }
-
-    setUserData({
-      userName: profile.full_name || '',
-      companyName: (profile.tenants as any)?.name || '',
-      plan: tenantPlan,
-      isMaster: profile.is_master || false,
-      trialDaysLeft,
-    })
+    const data = { userName: profile.full_name || '', companyName: (profile.tenants as any)?.name || '', plan: tenantPlan, isMaster: profile.is_master || false, trialDaysLeft, trialExpired }
+    userDataCache = data; cacheTime = Date.now(); setUserData(data)
   }, [])
 
   useEffect(() => { loadUser() }, [])
 
   async function logout() {
+    userDataCache = null
     await supabase.auth.signOut()
     router.push('/')
   }
@@ -72,8 +59,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { href: '/dashboard/plans',       label: 'Planos',           icon: '★', masterOnly: false },
   ]
 
-  const { userName, companyName, trialDaysLeft, plan, isMaster } = userData
+  const { userName, companyName, trialDaysLeft, plan, isMaster, trialExpired } = userData
   const isSettings = pathname === '/dashboard/settings'
+  const isPlansPage = pathname === '/dashboard/plans'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f7f4', fontFamily: font }}>
@@ -87,15 +75,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {trialDaysLeft !== null && plan === 'free' && (
           <Link href="/dashboard/plans" style={{
             margin: '0 0.75rem 0.75rem', padding: '0.75rem 1rem',
-            background: trialDaysLeft <= 3 ? 'rgba(37,99,235,0.25)' : 'rgba(5,150,105,0.15)',
-            borderRadius: 10, border: `1px solid ${trialDaysLeft <= 3 ? 'rgba(37,99,235,0.4)' : 'rgba(5,150,105,0.3)'}`,
+            background: trialExpired ? 'rgba(220,38,38,0.25)' : trialDaysLeft <= 3 ? 'rgba(37,99,235,0.25)' : 'rgba(5,150,105,0.15)',
+            borderRadius: 10, border: `1px solid ${trialExpired ? 'rgba(220,38,38,0.5)' : trialDaysLeft <= 3 ? 'rgba(37,99,235,0.4)' : 'rgba(5,150,105,0.3)'}`,
             textDecoration: 'none', display: 'block',
           }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: trialDaysLeft <= 3 ? '#93c5fd' : '#34d399', marginBottom: '0.1rem' }}>
-              {trialDaysLeft > 0 ? `⏳ ${trialDaysLeft} dias de trial` : '⚠️ Trial expirado'}
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: trialExpired ? '#fca5a5' : trialDaysLeft <= 3 ? '#93c5fd' : '#34d399', marginBottom: '0.1rem' }}>
+              {trialExpired ? '🔒 Trial expirado' : `⏳ ${trialDaysLeft} dias de trial`}
             </p>
             <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>
-              {trialDaysLeft > 0 ? 'Clique para fazer upgrade' : 'Limite: 5 propostas/mês'}
+              {trialExpired ? 'Assine um plano para continuar' : 'Clique para fazer upgrade'}
             </p>
           </Link>
         )}
@@ -145,7 +133,25 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <main style={{ flex: 1, marginLeft: 256, overflow: 'auto', padding: '2.5rem 3rem', minHeight: '100vh' }}>
+      <main style={{ flex: 1, marginLeft: 256, overflow: 'auto', padding: '2.5rem 3rem', minHeight: '100vh', position: 'relative' }}>
+        {/* Bloqueio de trial expirado — exceto na página de planos */}
+        {trialExpired && !isPlansPage && (
+          <div style={{ position: 'fixed', top: 0, left: 256, right: 0, bottom: 0, background: 'rgba(248,247,244,0.97)', backdropFilter: 'blur(8px)', zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+            <div style={{ background: 'white', borderRadius: 24, padding: '3rem', maxWidth: 480, width: '100%', textAlign: 'center', boxShadow: '0 24px 64px rgba(0,0,0,0.12)', border: '1px solid rgba(13,17,23,0.08)' }}>
+              <div style={{ width: 72, height: 72, background: 'rgba(37,99,235,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '2rem' }}>🔒</div>
+              <h2 style={{ fontFamily: font, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#0d1117', marginBottom: '0.75rem' }}>Seu período gratuito encerrou</h2>
+              <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '2rem' }}>
+                Os 14 dias de acesso completo chegaram ao fim. Escolha um plano para continuar criando propostas e usando o sistema.
+              </p>
+              <Link href="/dashboard/plans" style={{ display: 'block', background: '#2563eb', color: 'white', padding: '1rem 2rem', borderRadius: 100, textDecoration: 'none', fontWeight: 800, fontSize: '1rem', marginBottom: '0.75rem', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+                Ver planos e assinar →
+              </Link>
+              <button onClick={logout} style={{ background: 'transparent', border: 'none', color: '#9ca3af', fontSize: '0.85rem', cursor: 'pointer', fontFamily: font }}>
+                Sair da conta
+              </button>
+            </div>
+          </div>
+        )}
         {children}
       </main>
     </div>
