@@ -50,6 +50,55 @@ export default function PlansPage() {
       missing: [], color: '#7c3aed', featured: false },
   ]
 
+  async function selectPlan(planId: string) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', user.id).single()
+      if (!profile) return
+      
+      const { error } = await supabase
+        .from('tenants')
+        .update({ plan: planId })
+        .eq('id', profile.tenant_id)
+      
+      if (error) throw error
+      window.location.reload()
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao alterar plano: ' + (err as any).message)
+    }
+  }
+
+  async function simulateTrialAge(days: number) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', user.id).single()
+      if (!profile) return
+      
+      const targetDate = new Date()
+      targetDate.setDate(targetDate.getDate() - days)
+      
+      const { error } = await supabase
+        .from('tenants')
+        .update({ created_at: targetDate.toISOString() })
+        .eq('id', profile.tenant_id)
+      
+      if (error) throw error
+      window.location.reload()
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao simular idade do trial: ' + (err as any).message)
+    }
+  }
+
   const currentPlanData = plans.find(p => p.id === currentPlan) || plans[0]
   const proposalPercent = Math.min(100, Math.round((proposalsUsed / Math.max(currentPlanData.limit, 1)) * 100))
 
@@ -57,9 +106,18 @@ export default function PlansPage() {
 
   return (
     <div style={{ fontFamily: font }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Planos</h1>
-        <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>Gerencie sua assinatura</p>
+      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Planos</h1>
+          <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>Gerencie sua assinatura</p>
+        </div>
+        
+        {/* Painel de Simulação / Teste */}
+        <div style={{ background: '#fef3c7', border: '1px solid #f59e0b', borderRadius: 12, padding: '0.75rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#b45309' }}>🛠️ MODO DE TESTE:</span>
+          <button onClick={() => simulateTrialAge(0)} style={{ background: 'white', border: '1px solid #d97706', padding: '0.3rem 0.6rem', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, cursor: 'pointer', color: '#b45309' }}>Resetar Trial (0 dias)</button>
+          <button onClick={() => simulateTrialAge(15)} style={{ background: '#dc2626', border: 'none', padding: '0.3rem 0.6rem', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', color: 'white' }}>Simular Expirado (15 dias)</button>
+        </div>
       </div>
 
       {/* Status atual */}
@@ -101,10 +159,8 @@ export default function PlansPage() {
 
       {/* Grade de planos */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-        {plans.map((plan, idx) => {
+        {plans.map((plan) => {
           const isCurrent = plan.id === currentPlan
-          const currentIdx = plans.findIndex(p => p.id === currentPlan)
-          const isUpgrade = idx > currentIdx
           return (
             <div key={plan.id} style={{ background: plan.featured ? '#0d1117' : 'white', borderRadius: 16, border: isCurrent ? `2px solid ${plan.color}` : plan.featured ? 'none' : '1px solid rgba(13,17,23,0.08)', padding: '1.75rem', position: 'relative', boxShadow: plan.featured ? '0 8px 32px rgba(0,0,0,0.15)' : '0 1px 4px rgba(0,0,0,0.04)' }}>
               {isCurrent && <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: plan.color, color: 'white', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.25rem 0.75rem', borderRadius: 100, whiteSpace: 'nowrap' }}>Plano atual</div>}
@@ -126,10 +182,8 @@ export default function PlansPage() {
               </ul>
               {isCurrent ? (
                 <div style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: `${plan.color}18`, color: plan.color, fontSize: '0.85rem', fontWeight: 700, textAlign: 'center', border: `1.5px solid ${plan.color}40` }}>✓ Plano ativo</div>
-              ) : isUpgrade ? (
-                <button onClick={() => alert('Integração com pagamento em breve!')} style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: plan.featured ? '#2563eb' : '#0d1117', color: 'white', border: 'none', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', fontFamily: font }}>Fazer upgrade →</button>
               ) : (
-                <div style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: '#f3f4f6', color: '#9ca3af', fontSize: '0.85rem', fontWeight: 600, textAlign: 'center' }}>Plano inferior</div>
+                <button onClick={() => selectPlan(plan.id)} style={{ width: '100%', padding: '0.7rem', borderRadius: 100, background: plan.featured ? '#2563eb' : '#0d1117', color: 'white', border: 'none', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', fontFamily: font }}>Ativar plano</button>
               )}
             </div>
           )
@@ -139,8 +193,8 @@ export default function PlansPage() {
       <div style={{ background: 'rgba(29,78,216,0.06)', border: '1px solid rgba(29,78,216,0.15)', borderRadius: 12, padding: '1.25rem 1.5rem', marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <span style={{ fontSize: '1.25rem' }}>🔔</span>
         <div>
-          <p style={{ fontWeight: 700, color: '#1d4ed8', fontSize: '0.9rem' }}>Pagamentos em breve</p>
-          <p style={{ color: '#6b7280', fontSize: '0.82rem' }}>A integração com Asaas está sendo implementada. Em breve você poderá assinar diretamente pelo sistema.</p>
+          <p style={{ fontWeight: 700, color: '#1d4ed8', fontSize: '0.9rem' }}>Ambiente de testes ativo</p>
+          <p style={{ color: '#6b7280', fontSize: '0.82rem' }}>Clique em qualquer botão &quot;Ativar plano&quot; acima ou nos botões de simulação do cabeçalho para testar as limitações e bloqueios instantaneamente!</p>
         </div>
       </div>
     </div>
