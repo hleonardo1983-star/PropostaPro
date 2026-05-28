@@ -35,7 +35,9 @@ export default function ClientsPage() {
     if (editClient) {
       await supabase.from('clients').update(form).eq('id', editClient.id)
     } else {
-      await supabase.from('clients').insert({ ...form, tenant_id: tenantId })
+      const tenant = await getTenantData(supabase)
+      if (!tenant) { setSaving(false); return }
+      await supabase.from('clients').insert({ ...form, tenant_id: tenant.tenantId })
     }
     setSaving(false); setShowModal(false); load()
   }
