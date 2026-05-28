@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { getTenantData } from '@/lib/supabase/cache'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -18,20 +19,18 @@ export default function ReportsPage() {
   useEffect(() => {
     async function load() {
       setLoading(true)
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-      const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
-      if (!profile) return
+      const tenant = await getTenantData(supabase)
+      if (!tenant) return
+      const profile = { tenant_id: tenant.tenantId }
       const since = new Date()
       since.setMonth(since.getMonth() - parseInt(period))
-      const { data: recv } = await supabase.from('receivables').select('*, clients(name)').eq('tenant_id', profile.tenant_id).gte('created_at', since.toISOString()).order('created_at', { ascending: false })
-      const { data: props } = await supabase.from('proposals').select('id, status, created_at').eq('tenant_id', profile.tenant_id).gte('created_at', since.toISOString())
+      const { data: recv } = await supabase.from('receivables').select('*, clients(name)').eq('tenant_id', tenant.tenantId).gte('created_at', since.toISOString()).order('created_at', { ascending: false })
+      const { data: props } = await supabase.from('proposals').select('id, status, created_at').eq('tenant_id', tenant.tenantId).gte('created_at', since.toISOString())
       setReceivables(recv || [])
       setProposals(props || [])
       setLoading(false)
     }
     load()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period])
 
   const totalReceived = receivables.filter(r => r.status === 'paid').reduce((s, r) => s + Number(r.amount), 0)
