@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { checkTrialExpired } from '@/lib/trial'
+import { getTenantData } from '@/lib/supabase/cache'
 import Link from 'next/link'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
@@ -15,7 +15,6 @@ export default function ProposalsPage() {
   const [loading, setLoading] = useState(true)
   const [confirmId, setConfirmId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [trialExpired, setTrialExpired] = useState(false)
   const supabase = createClient()
 
   const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
@@ -27,27 +26,24 @@ export default function ProposalsPage() {
   }
 
   async function load() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
-    if (!profile) return
+    const tenant = await getTenantData(supabase)
+    if (!tenant) return
     const { data } = await supabase.from('proposals')
       .select('id, number, title, status, created_at, clients(name), proposal_items(quantity, unit_price)')
-      .eq('tenant_id', profile.tenant_id)
+      .eq('tenant_id', tenant.tenantId)
       .order('created_at', { ascending: false })
     setProposals(data || [])
-    const expired = await checkTrialExpired()
-    setTrialExpired(expired)
     setLoading(false)
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load() }, [])
 
   async function handleDelete(id: string) {
     setDeletingId(id)
-    await supabase.from('proposal_items').delete().eq('proposal_id', id)
-    await supabase.from('receivables').delete().eq('proposal_id', id)
+    await Promise.all([
+      supabase.from('proposal_items').delete().eq('proposal_id', id),
+      supabase.from('receivables').delete().eq('proposal_id', id),
+    ])
     await supabase.from('proposals').delete().eq('id', id)
     setConfirmId(null); setDeletingId(null); load()
   }
@@ -63,7 +59,7 @@ export default function ProposalsPage() {
           <div style={{ background: 'white', borderRadius: 20, padding: '2.5rem', width: '100%', maxWidth: 400, textAlign: 'center', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
             <div style={{ width: 56, height: 56, background: 'rgba(220,38,38,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>🗑</div>
             <h3 style={{ fontFamily: font, fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.5rem' }}>Excluir proposta?</h3>
-            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>Esta ação é permanente. A proposta e conta a receber vinculada serão removidas.</p>
+            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>Esta ação é permanente.</p>
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
               <button onClick={() => setConfirmId(null)} style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, fontFamily: font }}>Cancelar</button>
               <button onClick={() => handleDelete(confirmId)} disabled={!!deletingId} style={{ background: '#dc2626', color: 'white', border: 'none', padding: '0.7rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font, opacity: deletingId ? 0.7 : 1 }}>
@@ -73,25 +69,16 @@ export default function ProposalsPage() {
           </div>
         </div>
       )}
-
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <div>
           <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Propostas</h1>
           <p style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>{proposals.length} proposta{proposals.length !== 1 ? 's' : ''} no total</p>
         </div>
-        {trialExpired ? (
-          <span style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, fontSize: '0.9rem', fontWeight: 700, opacity: 0.5, cursor: 'not-allowed', display: 'inline-block' }}>+ Nova proposta</span>
-        ) : (
-          <Link href="/dashboard/proposals/new" style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>
-            + Nova proposta
-          </Link>
-        )}
+        <Link href="/dashboard/proposals/new" style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}>+ Nova proposta</Link>
       </div>
-
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-        {loading ? (
-          <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>Carregando...</div>
-        ) : proposals.length === 0 ? (
+        {loading ? <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>Carregando...</div>
+        : proposals.length === 0 ? (
           <div style={{ padding: '4rem', textAlign: 'center', color: '#6b7280' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📝</div>
             <p style={{ marginBottom: '1rem', fontWeight: 500 }}>Nenhuma proposta ainda</p>
@@ -124,7 +111,7 @@ export default function ProposalsPage() {
                     <td style={{ padding: '1rem 1.25rem' }}>
                       <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                         <Link href={`/dashboard/proposals/${p.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700 }}>Ver →</Link>
-                        <button onClick={() => setConfirmId(p.id)} disabled={trialExpired} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font, opacity: trialExpired ? 0.5 : 1 }}
+                        <button onClick={() => setConfirmId(p.id)} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font }}
                           onMouseEnter={e => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.borderColor = '#dc2626' }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'rgba(13,17,23,0.12)' }}>
                           Excluir
