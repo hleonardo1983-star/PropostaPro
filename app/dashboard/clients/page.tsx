@@ -17,10 +17,8 @@ export default function ClientsPage() {
   const supabase = createClient()
 
   async function load() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
-    if (!profile) return
+    const tenant = await getTenantData(supabase)
+    if (!tenant) return
     setTenantId(tenant.tenantId)
     const { data } = await supabase.from('clients').select('*, proposals(count)').eq('tenant_id', tenant.tenantId).order('name')
     setClients(data || [])
