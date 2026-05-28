@@ -18,10 +18,8 @@ export default function ReceivablesPage() {
   const supabase = createClient()
 
   async function load() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
-    if (!profile) return
+    const tenant = await getTenantData(supabase)
+    if (!tenant) return
     const { data } = await supabase.from('receivables')
       .select('*, clients(name), proposals(number, title)')
       .eq('tenant_id', tenant.tenantId)
