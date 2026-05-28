@@ -1,21 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { getTenantData } from '@/lib/supabase/cache'
 import { formatCurrency } from '@/lib/utils'
 import Link from 'next/link'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
-
-function Skeleton({ width = '100%', height = '1.25rem', radius = 8 }: { width?: string; height?: string; radius?: number }) {
-  return (
-    <div style={{
-      width, height, borderRadius: radius,
-      background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
-      backgroundSize: '200% 100%',
-      animation: 'shimmer 1.4s infinite',
-    }} />
-  )
-}
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({ proposals: 0, signed: 0, pending: 0, receivables: 0 })
@@ -26,42 +16,33 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('tenant_id, full_name, tenants(name)')
-        .eq('id', user.id)
-        .single()
-      if (!profile) return
-      setTenantName((profile.tenants as any)?.name || '')
+      const tenant = await getTenantData(supabase)
+      if (!tenant) return
 
-      // Todas as queries em paralelo para máxima performance
+      // Buscar nome da empresa e dados em paralelo
       const [
+        tenantData,
         { count: total },
         { count: signed },
         { count: pending },
         { data: recv },
-        { data: recentProps },
+        { data: recentProps }
       ] = await Promise.all([
-        supabase.from('proposals').select('*', { count: 'exact', head: true }).eq('tenant_id', profile.tenant_id),
-        supabase.from('proposals').select('*', { count: 'exact', head: true }).eq('tenant_id', profile.tenant_id).eq('status', 'signed'),
-        supabase.from('proposals').select('*', { count: 'exact', head: true }).eq('tenant_id', profile.tenant_id).eq('status', 'sent'),
-        supabase.from('receivables').select('amount').eq('tenant_id', profile.tenant_id).eq('status', 'pending'),
-        supabase.from('proposals')
-          .select('id, number, title, status, created_at, clients(name)')
-          .eq('tenant_id', profile.tenant_id)
-          .order('created_at', { ascending: false })
-          .limit(5),
+        supabase.from('tenants').select('name').eq('id', tenant.tenantId).single(),
+        supabase.from('proposals').select('*', { count: 'exact', head: true }).eq('tenant_id', tenant.tenantId),
+        supabase.from('proposals').select('*', { count: 'exact', head: true }).eq('tenant_id', tenant.tenantId).eq('status', 'signed'),
+        supabase.from('proposals').select('*', { count: 'exact', head: true }).eq('tenant_id', tenant.tenantId).eq('status', 'sent'),
+        supabase.from('receivables').select('amount').eq('tenant_id', tenant.tenantId).eq('status', 'pending'),
+        supabase.from('proposals').select('id, number, title, status, created_at, clients(name)').eq('tenant_id', tenant.tenantId).order('created_at', { ascending: false }).limit(5)
       ])
 
+      setTenantName((tenantData as any).data?.name || '')
       const totalRecv = recv?.reduce((s, r) => s + Number(r.amount), 0) || 0
       setStats({ proposals: total || 0, signed: signed || 0, pending: pending || 0, receivables: totalRecv })
       setRecent(recentProps || [])
       setLoading(false)
     }
     load()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
@@ -72,64 +53,34 @@ export default function DashboardPage() {
     rejected: { label: 'Recusada',    color: '#dc2626', bg: 'rgba(220,38,38,0.1)'   },
   }
 
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', color: '#6b7280', fontFamily: font }}>Carregando...</div>
+
   return (
     <div style={{ fontFamily: font }}>
-      <style>{`
-        @keyframes shimmer {
-          0%   { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-      `}</style>
-
-      {/* Cabeçalho */}
       <div style={{ marginBottom: '2rem' }}>
-        {loading
-          ? <Skeleton width="280px" height="2.25rem" radius={10} />
-          : <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Olá, {tenantName} 👋</h1>
-        }
-        <p style={{ color: '#6b7280', fontSize: '0.9rem', marginTop: '0.4rem' }}>Aqui está o resumo da sua conta</p>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Olá, {tenantName} 👋</h1>
+        <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Aqui está o resumo da sua conta</p>
       </div>
-
-      {/* Cards de estatísticas */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
         {[
-          { label: 'Total de propostas', value: stats.proposals,                   icon: '📝', color: '#0d1117' },
-          { label: 'Assinadas',          value: stats.signed,                      icon: '✅', color: '#065f46' },
-          { label: 'Aguardando',         value: stats.pending,                     icon: '⏳', color: '#2563eb' },
-          { label: 'A receber',          value: formatCurrency(stats.receivables), icon: '💰', color: '#1d4ed8' },
+          { label: 'Total de propostas', value: stats.proposals, icon: '📝', color: '#0d1117' },
+          { label: 'Assinadas', value: stats.signed, icon: '✅', color: '#065f46' },
+          { label: 'Aguardando', value: stats.pending, icon: '⏳', color: '#2563eb' },
+          { label: 'A receber', value: formatCurrency(stats.receivables), icon: '💰', color: '#1d4ed8' },
         ].map(s => (
           <div key={s.label} style={{ background: 'white', borderRadius: 16, padding: '1.5rem', border: '1px solid rgba(13,17,23,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>{s.icon}</div>
-            {loading
-              ? <Skeleton width="60px" height="2rem" radius={6} />
-              : <div style={{ fontSize: '1.75rem', fontWeight: 800, color: s.color, letterSpacing: '-0.02em' }}>{s.value}</div>
-            }
-            <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.35rem' }}>{s.label}</div>
+            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: s.color, letterSpacing: '-0.02em' }}>{s.value}</div>
+            <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.25rem' }}>{s.label}</div>
           </div>
         ))}
       </div>
-
-      {/* Tabela de propostas recentes */}
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
         <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(13,17,23,0.06)' }}>
           <h2 style={{ fontWeight: 700, fontSize: '1rem' }}>Propostas recentes</h2>
           <Link href="/dashboard/proposals/new" style={{ background: '#2563eb', color: 'white', padding: '0.5rem 1.2rem', borderRadius: 100, textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700 }}>+ Nova proposta</Link>
         </div>
-
-        {loading ? (
-          /* Skeleton da tabela */
-          <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-            {[1, 2, 3].map(i => (
-              <div key={i} style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                <Skeleton width="36px" height="1rem" radius={4} />
-                <Skeleton width="30%" height="1rem" radius={4} />
-                <Skeleton width="18%" height="1rem" radius={4} />
-                <Skeleton width="72px" height="1.5rem" radius={100} />
-                <Skeleton width="72px" height="1rem" radius={4} />
-              </div>
-            ))}
-          </div>
-        ) : recent.length === 0 ? (
+        {recent.length === 0 ? (
           <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
             <p style={{ marginBottom: '1rem' }}>Nenhuma proposta ainda</p>
             <Link href="/dashboard/proposals/new" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>Criar primeira proposta →</Link>
@@ -138,7 +89,7 @@ export default function DashboardPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(13,17,23,0.06)', background: '#fafafa' }}>
-                {['Nº', 'Título', 'Cliente', 'Status', 'Data'].map(h => (
+                {['Nº','Título','Cliente','Status','Data'].map(h => (
                   <th key={h} style={{ padding: '0.85rem 1.25rem', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</th>
                 ))}
               </tr>
