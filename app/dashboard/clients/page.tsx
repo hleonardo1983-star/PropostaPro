@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { checkTrialExpired } from '@/lib/trial'
+import { getTenantData } from '@/lib/supabase/cache'
 
 const font = "'Plus Jakarta Sans', system-ui, sans-serif"
 
@@ -14,7 +14,6 @@ export default function ClientsPage() {
   const [saving, setSaving] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [confirmDelete, setConfirmDelete] = useState<any>(null)
-  const [trialExpired, setTrialExpired] = useState(false)
   const supabase = createClient()
 
   async function load() {
@@ -22,15 +21,12 @@ export default function ClientsPage() {
     if (!user) return
     const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
     if (!profile) return
-    setTenantId(profile.tenant_id)
-    const { data } = await supabase.from('clients').select('*, proposals(count)').eq('tenant_id', profile.tenant_id).order('name')
+    setTenantId(tenant.tenantId)
+    const { data } = await supabase.from('clients').select('*, proposals(count)').eq('tenant_id', tenant.tenantId).order('name')
     setClients(data || [])
-    const expired = await checkTrialExpired()
-    setTrialExpired(expired)
     setLoading(false)
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load() }, [])
 
   function openNew() { setEditClient(null); setForm({ name: '', email: '', phone: '', document: '', notes: '' }); setShowModal(true) }
@@ -72,7 +68,7 @@ export default function ClientsPage() {
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
                 <button type="button" onClick={() => setShowModal(false)} style={{ background: 'transparent', border: '1.5px solid rgba(13,17,23,0.15)', padding: '0.65rem 1.25rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, fontFamily: font }}>Cancelar</button>
-                <button type="submit" disabled={saving || trialExpired} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '0.65rem 1.5rem', borderRadius: 100, cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.875rem', fontWeight: 700, fontFamily: font, opacity: (saving || trialExpired) ? 0.5 : 1 }}>{saving ? 'Salvando...' : 'Salvar'}</button>
+                <button type="submit" disabled={saving} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '0.65rem 1.5rem', borderRadius: 100, cursor: 'pointer', fontSize: '0.875rem', fontWeight: 700, fontFamily: font, opacity: saving ? 0.7 : 1 }}>{saving ? 'Salvando...' : 'Salvar'}</button>
               </div>
             </form>
           </div>
@@ -98,7 +94,7 @@ export default function ClientsPage() {
           <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: '#0d1117' }}>Clientes</h1>
           <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>{clients.length} cliente{clients.length !== 1 ? 's' : ''} cadastrado{clients.length !== 1 ? 's' : ''}</p>
         </div>
-        <button onClick={openNew} disabled={trialExpired} style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, border: 'none', cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font, opacity: trialExpired ? 0.5 : 1 }}>+ Novo cliente</button>
+        <button onClick={openNew} style={{ background: '#2563eb', color: 'white', padding: '0.7rem 1.5rem', borderRadius: 100, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700, fontFamily: font }}>+ Novo cliente</button>
       </div>
 
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid rgba(13,17,23,0.08)', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
@@ -129,8 +125,8 @@ export default function ClientsPage() {
                   <td style={{ padding: '1rem 1.25rem', fontSize: '0.875rem', color: '#6b7280' }}>{(c.proposals as any)?.[0]?.count || 0}</td>
                   <td style={{ padding: '1rem 1.25rem' }}>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button onClick={() => openEdit(c)} disabled={trialExpired} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#6b7280', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font, opacity: trialExpired ? 0.5 : 1 }}>Editar</button>
-                      <button onClick={() => setConfirmDelete(c)} disabled={trialExpired} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: trialExpired ? 'not-allowed' : 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font, opacity: trialExpired ? 0.5 : 1 }}
+                      <button onClick={() => openEdit(c)} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#6b7280', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font }}>Editar</button>
+                      <button onClick={() => setConfirmDelete(c)} style={{ background: 'transparent', border: '1px solid rgba(13,17,23,0.12)', color: '#9ca3af', padding: '0.3rem 0.75rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600, fontFamily: font }}
                         onMouseEnter={e => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.borderColor = '#dc2626' }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'rgba(13,17,23,0.12)' }}>
                         Excluir
